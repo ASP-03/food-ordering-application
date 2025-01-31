@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link';
 import { use, useState } from "react";
 import Image from "next/image";
 
@@ -16,12 +17,19 @@ export default function RegisterPage() {
             headers: {'Content-Type': 'application/json'},
         })
         setCreatingUser(false);
+        setUserCreated(true);
     }
     return(
         <section className="mt-8">
             <h1 className="mb-4 text-center text-red-600 text-4xl">
                 Welcome!
             </h1>
+            {userCreated && (
+                <div className="my-4 text-center">
+                    Registered! Now you can{' '}
+                    <Link className='underline' href={'/login'}>Login &raquo;</Link>
+                </div>
+            )}
             <form className="block max-w-xs mx-auto" onSubmit={handleFormSubmit}>
                 <input type="email" placeholder="Email" value={email} disabled={creatingUser}
                  onChange={ev => setEmail(ev.target.value)} />
