@@ -1,5 +1,5 @@
 import Header from "./components/layout/Header";import type { Metadata } from "next";
-import AppProvider from './components/AppContext'
+import AppProvider from './components/AppContext';
 import "./globals.css";
 import { Roboto } from "next/font/google";
 

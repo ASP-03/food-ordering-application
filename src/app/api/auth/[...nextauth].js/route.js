@@ -17,7 +17,7 @@ const handler = NextAuth({
         async authorize(credentials, req) {
           const email = credentials?.email;
           const password = credentials?.password;
-          mongoose.connect(process.env.MONGO_URL);
+          await mongoose.connect(process.env.MONGO_URL);
           const user = User.findOne({email});
 
           const passwordOk = await user && bcrypt.compareSync(password, user.password); 
