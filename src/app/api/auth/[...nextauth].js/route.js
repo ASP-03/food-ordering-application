@@ -1,36 +1,50 @@
-import CredentialsProvider from "next-auth/providers/credentials"
+import CredentialsProvider from "next-auth/providers/credentials";
 import { User } from "../../../models/User";
-import bcrypt from 'bcrypt';
-import NextAuth from "next-auth"
+import bcrypt from "bcrypt";
+import NextAuth from "next-auth";
 import mongoose from "mongoose";
+
+// Efficient DB connection handling
+async function connectDB() {
+  if (mongoose.connections[0].readyState) return; // Already connected
+  await mongoose.connect(process.env.MONGO_URL);
+}
 
 const handler = NextAuth({
   secret: process.env.SECRET,
   providers: [
     CredentialsProvider({
-        name: 'Credentials',
-        id: 'credentials',
-        credentials: {
-          username: { label: "Email", type: "email", placeholder: "test@example.com" },
-          password: { label: "Password", type: "password" },
-        },
-        async authorize(credentials, req) {
-          const email = credentials?.email;
-          const password = credentials?.password;
-          await mongoose.connect(process.env.MONGO_URL);
-          const user = User.findOne({email});
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email", placeholder: "test@example.com" }, // Changed 'username' to 'email'
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const email = credentials?.email;
+        const password = credentials?.password;
 
-          const passwordOk = await user && bcrypt.compareSync(password, user.password); 
+        await connectDB(); // Connect to DB
 
-          if(passwordOk) {
-            return user;
-          }
+        const user = await User.findOne({ email }); // Await DB query
 
-          return null
+        if (!user) {
+          throw new Error("No user found with this email."); // Better error handling
         }
-      })
 
-  ]
-})
+        const passwordOk = await bcrypt.compare(password, user.password); // Compare password
 
-export { handler as GET, handler as POST }
+        if (passwordOk) {
+          return user; // Successful login
+        } else {
+          throw new Error("Invalid password."); // Clear error for debugging
+        }
+      },
+    }),
+  ],
+  pages: {
+    signIn: "/auth/signin", // Optional: custom sign-in page
+    error: "/auth/error",    // Redirect on auth errors
+  },
+});
+
+export default handler;
