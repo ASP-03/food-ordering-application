@@ -8,7 +8,7 @@ export default function Header(){
   const status = session.status;
     return(
         <header className="flex items-center justify-between">
-        <nav className="flex items-center gap-8 text-gray-500 font-semibold">
+        <nav className="flex items-center gap-8 text-gray-500 font-semibold justify">
            <Link className="text-red-600 font-semibold text-2xl" href={'/'}> Rominos Pizza
            </Link>
           <Link href={'/'}>Home</Link>

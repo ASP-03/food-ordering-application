@@ -15,8 +15,8 @@ export default function Hero() {
               </h1>
               <p className="my-6 text-gray-500 text-sm">Pizza makes everything better—whether it's solving problems or celebrating victories. Do you have a favorite pizza topping, or are you just vibing with the pizza energy?
               </p>
-              <div className="flex">
-                <button className="bg-red-600 flex items-center text-white px-6 py-2 round-full text-sm"> 
+              <div className="flex max-w-xs gap-4">
+                <button className="bg-red-600 flex items-center gap-1 text-white px-6 py-2 round-full text-sm"> 
                  ORDER NOW
                  <Right/>
                 </button>
