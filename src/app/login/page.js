@@ -12,10 +12,8 @@ export default function LoginPage() {
     async function handleFormSubmit(ev) {
         ev.preventDefault();
         setLoginInProgress(true);
-        
         await signIn('credentials', {email, password});
-        
-        setLoginInProgress(loginInProgress);
+        setLoginInProgress(false);
     }
     return(
         <section className="mt-8">
@@ -23,18 +21,18 @@ export default function LoginPage() {
                 Login
             </h1>
             <form className="max-w-xs mx-auto" onSubmit={handleFormSubmit}>
-              <input type="email" name="email" placeholder="Email" value= {email} disabled={loginInProgress}
+              <input type="email" name="email" placeholder="Email" value={email} disabled={loginInProgress}
                  onChange={ev => setEmail(ev.target.value)} />
               <input type="password" name="password" placeholder="Password" value={password} disabled={loginInProgress} onChange={ev => setPassword(ev.target.value)} />
-              <button disabled={loginInProgress} type="submit">Login</button>
+              <button disabled={loginInProgress} type="submit">Login
+              </button>
               <div className="mt-4 text-center text-gray-500">
                     Or Continue with
                 </div>
                 <button className="flex mt-2 justify-center">
-                    <Image src={'/google.jpg'} alt={'Google'} width={24} height={24}/> Google
+                    <Image src={'/google.jpg'} alt={'Google'} width={24} height={24} /> Google
                 </button>
-
-            </form>
+             </form>
         </section>
     )
 }
