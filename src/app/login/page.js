@@ -29,7 +29,7 @@ export default function LoginPage() {
               <div className="mt-4 text-center text-gray-500">
                     Or Continue with
                 </div>
-                <button className="flex mt-2 justify-center">
+                <button onClick={() => signIn('google')} className="flex mt-2 justify-center">
                     <Image src={'/google.jpg'} alt={'Google'} width={24} height={24} /> Google
                 </button>
              </form>
