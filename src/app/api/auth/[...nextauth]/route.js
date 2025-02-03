@@ -4,15 +4,19 @@ import bcrypt from "bcrypt";
 import NextAuth from "next-auth";
 import mongoose from "mongoose";
 import GoogleProvider from "next-auth/providers/google";
+import { adapter } from "next/dist/server/web/adapter";
+import { MongoDBAdapter } from "@auth/mongodb-adapter"
+import client from "../../../components/lib/mongoConnect";
+
 
 const authOptions = {
   secret: process.env.SECRET,
+  adapter: MongoDBAdapter(client),
   providers: [
-      GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      }),
-    
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -23,17 +27,23 @@ const authOptions = {
         const email = credentials?.email;
         const password = credentials?.password;
 
-        await mongoose.connect(process.env.MONGO_URL);
-        const user = await User.findOne({ email }); // Add `await` here to fetch the user
-
-        if (user && bcrypt.compareSync(password, user.password)) {
-          return user; // Authentication successful
+        if (mongoose.connection.readyState === 0) {
+          await mongoose.connect(process.env.MONGO_URL);
         }
 
-        return null; // Authentication failed
+        const user = await User.findOne({ email });
+        if (user && await bcrypt.compare(password, user.password)) {
+          return { id: user._id, name: user.name, email: user.email };
+        }
+
+        return null;
       },
     }),
   ],
+  pages: {
+    signIn: "/auth/signin",
+    error: "/auth/error",  // Optional: custom error page
+  },
 };
 
 const handler = (req, res) => NextAuth(req, res, authOptions);
