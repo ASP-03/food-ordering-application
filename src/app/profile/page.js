@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 export default function profilePage() {
     const session = useSession();
     const [userName, setUserName] = useState('');
+    const [profileSaved, setProfileSaved] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const {status} = session;
 
     useEffect(() => {
@@ -17,11 +19,17 @@ export default function profilePage() {
 
     async function handleProfileUpdate(ev) {
         ev.preventDefault();
+        setProfileSaved(false);
+        setIsSaving(true);
         const response = await fetch('/api/profile', {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({name:userName}),
         })
+        setIsSaving(false);
+        if(response.ok){
+            setProfileSaved(true);
+        }
 
     }
 
@@ -41,12 +49,24 @@ export default function profilePage() {
             Profile
             </h1>
             <div className="max-w-md mx-auto">
+                {profileSaved && (
+                    <h2 className="text-center bg-green-100 p-4 rounded-lg border border-green-300">Your profile was saved!
+                    </h2>
+                  )
+                }
+                {isSaving && (
+                    <h2 className="text-center bg-blue-100 p-4 rounded-lg border border-blue-300">Saving...
+                    </h2>
+                )} 
                 <div className="flex gap-4 items-center">
                    <div>
                       <div className="bg-gray-300 p-2 rounded-lg relative">
                          <Image className="rounded-lg w-full h-full mb-1" src={userImage}
                          width={50} height={50} alt={'avatar'} />
-                         <button type="button">Edit</button>
+                         <label>
+                         <input type="file" className="hidden"/>
+                         <span className="text-center">Edit</span>
+                         </label>
                       </div>
                    </div>
                    <form className="grow" onSubmit={handleProfileUpdate}>
