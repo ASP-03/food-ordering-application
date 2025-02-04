@@ -1,4 +1,5 @@
-import {User} from "../../models/User"
+import {User} from "../../models/User";
+import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 
 export async function POST(req) {
@@ -8,13 +9,12 @@ export async function POST(req) {
     const pass = body.password;
 
     if (!pass?.length || pass.length < 5) {
-        new Error('Password must contain at least 5 characters');
-        return false;
+        new Error('Password must contain at least 5 characters');   
     }
 
     const notHashpass = pass;
     const salt = bcrypt.genSaltSync(10);
-    const hashedPass = bcrypt.hashSync(notHashpass, salt);
+    body.password = bcrypt.hashSync(notHashpass, salt);
 
     const createdUser = await User.create(body);
     return Response.json(createdUser);
