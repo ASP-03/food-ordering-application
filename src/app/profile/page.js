@@ -60,12 +60,12 @@ export default function profilePage() {
                 )} 
                 <div className="flex gap-4 items-center">
                    <div>
-                      <div className="bg-gray-300 p-2 rounded-lg relative">
+                      <div className="p-2 rounded-lg relative">
                          <Image className="rounded-lg w-full h-full mb-1" src={userImage}
-                         width={50} height={50} alt={'avatar'} />
+                         width={250} height={250} alt={'avatar'} />
                          <label>
                          <input type="file" className="hidden"/>
-                         <span className="text-center">Edit</span>
+                         <span className="block border border-gray-300 rounded-lg p-2 text-center cursor-pointer">Edit</span>
                          </label>
                       </div>
                    </div>
