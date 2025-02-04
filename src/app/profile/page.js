@@ -32,7 +32,8 @@ export default function profilePage() {
                       </div>
                    </div>
                    <div className="grow">
-                      <input type="text" placeholder="first and last name" />
+                      <input type="text" placeholder="First and last name" />
+                      <input type="email" disabled={true} value={session.data.user.email} />
                       <button type="submit">Save</button>
                    </div>
                 </div>
