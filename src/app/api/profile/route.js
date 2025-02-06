@@ -20,7 +20,7 @@ export async function PUT(req) {
     }    
 
     if(Object.keys(update).length > 0) {
-        await User.updateOne({email}, {update});
+        await User.updateOne({email}, update);
 
     }
 

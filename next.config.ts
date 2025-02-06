@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'asp-food-ordering.s3.amazonaws.com'
+        hostname: 'asp-food-ordering.s3.ap-southeast-2.amazonaws.com',
 
       },
     ]
