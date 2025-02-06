@@ -26,7 +26,7 @@ export default function profilePage() {
         const response = await fetch('/api/profile', {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({name:userName}),
+            body: JSON.stringify({name:userName, image}),
         })
         setIsSaving(false);
         if(response.ok){
@@ -72,7 +72,7 @@ export default function profilePage() {
                 )} 
                 <div className="flex gap-4 items-center">
                    <div>
-                      <div className="p-2 rounded-lg relative">
+                      <div className="p-2 rounded-lg relative max-w-[120px]">
                         {image && (
                              <Image className="rounded-lg w-full h-full mb-1" src={image}
                              width={250} height={250} alt={'avatar'} />
