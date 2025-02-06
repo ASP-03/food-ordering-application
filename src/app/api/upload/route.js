@@ -1,4 +1,5 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { buffer } from "stream/consumers";
 import uniqid from "uniqid";
 
 export async function POST(req) {
@@ -18,9 +19,19 @@ export async function POST(req) {
 
         const newFileName = uniqid() + '.' + ext;
 
+        const chunks =[];
+
+        for await (const chunk of file.stream()){
+            chunks.push(chunk);
+        }
+        const buffer = Buffer.concat(chunks);
+
         s3Client.send(new PutObjectCommand({
             Bucket: 'asp-food-ordering',
-            Key
+            Key: newFileName,
+            ACL: 'public-read',
+            ContentType: file.type,
+            Body: buffer,
 
         }))
     }
