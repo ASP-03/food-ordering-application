@@ -3,6 +3,8 @@ import { useSession } from "next-auth/react"
 import { redirect } from "next/dist/server/api-utils";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Infobox from "../components/layout/Infobox";
+import Successbox from "../components/layout/Succesbox";
 
 export default function profilePage() {
     const session = useSession();
@@ -10,6 +12,7 @@ export default function profilePage() {
     const [image, setImage] = useState('');
     const [profileSaved, setProfileSaved] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
     const {status} = session;
 
     useEffect(() => {
@@ -38,12 +41,14 @@ export default function profilePage() {
             if(files?.length === 1) {
                 const data = new FormData;
                 data.append('file', files[0]);
+                setIsUploading(true);
                 const response = await fetch ('/api/upload', {
                     method: 'POST',
                     body: data,
                 })
                 const result = await response.json();
                 setImage(result.url);
+                setIsUploading(false);
             }
         }
 
@@ -62,14 +67,15 @@ export default function profilePage() {
             </h1>
             <div className="max-w-md mx-auto">
                 {profileSaved && (
-                    <h2 className="text-center bg-green-100 p-4 rounded-lg border border-green-300">Your profile was saved!
-                    </h2>
+                    <Successbox>Profile Saved!</Successbox>
                   )
                 }
                 {isSaving && (
-                    <h2 className="text-center bg-blue-100 p-4 rounded-lg border border-blue-300">Saving...
-                    </h2>
+                    <Infobox>Saving...</Infobox>
                 )} 
+                {isUploading && (
+                    <Infobox>Uploading...</Infobox>
+                )}
                 <div className="flex gap-4 items-center">
                    <div>
                       <div className="p-2 rounded-lg relative max-w-[120px]">
