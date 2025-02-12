@@ -29,8 +29,8 @@ export default function LoginPage() {
               <div className="mt-4 text-center text-gray-500">
                     Or Continue with
                 </div>
-                <button type="button" onClick={() => signIn('google', {callbackUrl:'/'})} 
-                   className="flex mt-2 justify-center">
+                <button type="button" onClick={() => signIn('google',{callbackUrl:'/'})} 
+                   className="flex mt-2 justify-center shadow-md">
                     <Image src={'/google.jpg'} alt={'Google'} width={24} height={24} /> Google
                 </button>
              </form>
