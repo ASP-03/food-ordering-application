@@ -1,7 +1,8 @@
 import Header from "./components/layout/Header";import type { Metadata } from "next";
-import AppProvider from './components/AppContext';
+import AppProvider from "./components/AppContext";
 import "./globals.css";
 import { Roboto } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className="antialiased">
          <main className="max-w-4xl mx-auto p-4">
           <AppProvider>
+            <Toaster />
             <Header />
             {children}
             <footer className="border-t p-8 text-center text-gray-500 mt-16">

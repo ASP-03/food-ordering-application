@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Infobox from "../components/layout/Infobox";
 import Successbox from "../components/layout/Succesbox";
+import toast from "react-hot-toast";
 
 export default function profilePage() {
     const session = useSession();
@@ -41,14 +42,14 @@ export default function profilePage() {
             if(files?.length === 1) {
                 const data = new FormData;
                 data.append('file', files[0]);
-                setIsUploading(true);
+                toast("Uploading...");
                 const response = await fetch ('/api/upload', {
                     method: 'POST',
                     body: data,
                 })
+                toast.success("Uploaded!");
                 const result = await response.json();
                 setImage(result.url);
-                setIsUploading(false);
             }
         }
 
@@ -73,9 +74,7 @@ export default function profilePage() {
                 {isSaving && (
                     <Infobox>Saving...</Infobox>
                 )} 
-                {isUploading && (
-                    <Infobox>Uploading...</Infobox>
-                )}
+                
                 <div className="flex gap-4 items-center">
                    <div>
                       <div className="p-2 rounded-lg relative max-w-[120px]">
