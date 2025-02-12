@@ -44,25 +44,25 @@ export default function profilePage() {
 
     async function handleFileChange(ev) {
         const files = ev.target.files
-        if(files?.length === 1) {
-            const data = new FormData
+        if (files?.length === 1) {
+            const data = new FormData()
             data.append('file', files[0])
-
-            const uploadPromise = new Promise((resolve) => {
-                const response = fetch('/api/upload', {
+    
+            const uploadPromise = new Promise(async (resolve, reject) => {
+                const response = await fetch('/api/upload', {
                     method: 'POST',
                     body: data,
-                }).then(response => {
-                    if (response.ok) {
-                        response.json().then(result => {
-                            setImage(result.url)
-                            resolve()
-                        })
-                    } 
-                    throw new Error('Upload Unsuccessfull');
                 })
+    
+                if (response.ok) {
+                    const result = await response.json()
+                    setImage(result.url)
+                    resolve()
+                } else {
+                    reject(new Error('Upload failed'))
+                }
             })
-
+    
             await toast.promise(uploadPromise, {
                 loading: 'Uploading...',
                 success: 'Uploaded!',
@@ -70,6 +70,7 @@ export default function profilePage() {
             })
         }
     }
+    
 
     if(status === 'loading') {
         return 'Loading...'
