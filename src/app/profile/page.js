@@ -110,7 +110,7 @@ export default function profilePage() {
                 Profile
             </h1>
             <div className='max-w-md mx-auto'>
-                <div className='flex gap-4 items-center'>
+                <div className='flex gap-4'>
                     <div>
                         <div className='p-2 rounded-lg relative max-w-[120px]'>
                             {image && (
@@ -127,7 +127,10 @@ export default function profilePage() {
                         <input type='text' placeholder='First and last name' value={userName} onChange={ev => setUserName(ev.target.value)} />
                         <input type='email' disabled={true} value={session.data.user.email} />
                         <input type='text' placeholder='Street Address'/>
-                        <input type='text' placeholder='City'/>
+                        <div className='flex gap-2'>
+                             <input type='text' placeholder='City'/>
+                             <input type='text' placeholder='Pin Code'/>
+                        </div>
                         <input type='text' placeholder='Country'/>
                         <button type='submit'>Save</button>
                     </form>
