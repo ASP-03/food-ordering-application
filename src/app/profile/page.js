@@ -45,38 +45,54 @@ export default function profilePage() {
     async function handleFileChange(ev) {
         const files = ev.target.files;
         if (files?.length === 1) {
-            const data = new FormData();
-            data.append('file', files[0]);
+            const data = new FormData()
+            data.append('file', files[0])
     
             const uploadPromise = new Promise(async (resolve, reject) => {
                 try {
+                    const controller = new AbortController(); // Abort request on timeout
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+    
                     const response = await fetch('/api/upload', {
                         method: 'POST',
                         body: data,
+                        signal: controller.signal, // Attach abort controller
                     });
     
-                    if (!response.ok) throw new Error('Upload failed');
+                    clearTimeout(timeoutId); // Clear timeout if request succeeds
+    
+                    if (!response.ok) {
+                        reject(new Error('Upload failed: Server responded with error'))
+                        return;
+                    }
     
                     const result = await response.json();
     
                     if (!result.url) {
-                        throw new Error('Invalid response: No image URL returned');
+                        reject(new Error('Invalid response: No image URL returned'))
+                        return;
                     }
     
                     setImage(result.url);
-                    resolve(); // Marks the promise as successful
+                    resolve(); // Only resolves when upload is 100% successful
                 } catch (error) {
-                    reject(error.message || 'Upload failed'); // Ensures proper rejection
+                    if (error.name === 'AbortError') {
+                        reject(new Error('Upload timeout: Server took too long to respond'))
+                    } else {
+                        reject(error); // Ensure all errors cause rejection
+                    }
                 }
-            });
+            })
     
             await toast.promise(uploadPromise, {
                 loading: 'Uploading...',
                 success: 'Uploaded!',
-                error: 'Upload Unsuccessful',
-            });
+                error: (err) => err.message || 'Upload Unsuccessful', // Shows the actual error message
+            })
         }
     }
+    
+    
     
     
 
