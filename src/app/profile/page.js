@@ -126,6 +126,9 @@ export default function profilePage() {
                     <form className='grow' onSubmit={handleProfileUpdate}>
                         <input type='text' placeholder='First and last name' value={userName} onChange={ev => setUserName(ev.target.value)} />
                         <input type='email' disabled={true} value={session.data.user.email} />
+                        <input type='text' placeholder='Street Address'/>
+                        <input type='text' placeholder='City'/>
+                        <input type='text' placeholder='Country'/>
                         <button type='submit'>Save</button>
                     </form>
                 </div>
