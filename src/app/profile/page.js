@@ -43,33 +43,41 @@ export default function profilePage() {
     }
 
     async function handleFileChange(ev) {
-        const files = ev.target.files
+        const files = ev.target.files;
         if (files?.length === 1) {
-            const data = new FormData()
-            data.append('file', files[0])
+            const data = new FormData();
+            data.append('file', files[0]);
     
             const uploadPromise = new Promise(async (resolve, reject) => {
-                const response = await fetch('/api/upload', {
-                    method: 'POST',
-                    body: data,
-                })
+                try {
+                    const response = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: data,
+                    });
     
-                if (response.ok) {
-                    const result = await response.json()
-                    setImage(result.url)
-                    resolve()
-                } else {
-                    reject(new Error('Upload failed'))
+                    if (!response.ok) throw new Error('Upload failed');
+    
+                    const result = await response.json();
+    
+                    if (!result.url) {
+                        throw new Error('Invalid response: No image URL returned');
+                    }
+    
+                    setImage(result.url);
+                    resolve(); // Marks the promise as successful
+                } catch (error) {
+                    reject(error.message || 'Upload failed'); // Ensures proper rejection
                 }
-            })
+            });
     
             await toast.promise(uploadPromise, {
                 loading: 'Uploading...',
                 success: 'Uploaded!',
                 error: 'Upload Unsuccessful',
-            })
+            });
         }
     }
+    
     
 
     if(status === 'loading') {
