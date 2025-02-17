@@ -11,6 +11,11 @@ export default function profilePage() {
     const session = useSession()
     const [userName, setUserName] = useState('')
     const [image, setImage] = useState('')
+    const [phone, setPhone] = useState('')
+    const [streetAddress, setStreetAddress] = useState('')
+    const [pinCode, setPinCode] = useState('')
+    const [city, setCity] = useState('')
+    const [country, setCountry] = useState('')
     const {status} = session
 
     useEffect(() => {
@@ -26,7 +31,8 @@ export default function profilePage() {
             const response = await fetch('/api/profile', {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({name:userName, image})
+                body: JSON.stringify({name:userName, image, streetAddress, phone, city, pinCode, country
+                })
             })
             if(response.ok) {
                 resolve()
@@ -126,13 +132,23 @@ export default function profilePage() {
                     <form className='grow' onSubmit={handleProfileUpdate}>
                         <input type='text' placeholder='First and last name' value={userName} onChange={ev => setUserName(ev.target.value)} />
                         <input type='email' disabled={true} value={session.data.user.email} />
-                        <input type='tel' placeholder='Phone'/>
-                        <input type='text' placeholder='Street Address'/>
+                        <input 
+                            type='tel' placeholder='Phone' 
+                            value={phone} onChange={ev => setPhone(ev.target.value)}/>
+                        <input 
+                            type='text' placeholder='Street Address'
+                            value={streetAddress} onChange={ev => setStreetAddress(ev.target.value)}/>
                         <div className='flex gap-4'>
-                             <input type='text' placeholder='City'/>
-                             <input type='text' placeholder='Pin Code'/>
+                             <input 
+                                type='text' placeholder='City'
+                                value={city} onChange={ev => setCity(ev.target.value)} />
+                             <input 
+                                type='text' placeholder='Pin Code'
+                                value={pinCode} onChange={ev => setPinCode(ev.target.value)} />
                         </div>
-                        <input type='text' placeholder='Country'/>
+                        <input 
+                                type='text' placeholder='Country'
+                                value={country} onChange={ev => setCountry(ev.target.value)} />
                         <button type='submit'>Save</button>
                     </form>
                 </div>
