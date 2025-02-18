@@ -22,6 +22,16 @@ export default function profilePage() {
         if (status === 'authenticated') {
             setUserName(session.data.user.name)
             setImage(session.data.user.image)
+            fetch('/api/profile').then(response => {
+                response.json().then(data => {
+                    setPhone(data.phone)
+                    setStreetAddress(data.streetAddress)
+                    setCity(data.city)
+                    setPinCode(data.pinCode)
+                    setCountry(data.country)
+                })
+            })
+
         }
     }, [session, status])
 
@@ -130,7 +140,9 @@ export default function profilePage() {
                         </div>
                     </div>
                     <form className='grow' onSubmit={handleProfileUpdate}>
-                        <input type='text' placeholder='First and last name' value={userName} onChange={ev => setUserName(ev.target.value)} />
+                        <input 
+                            type='text' placeholder='First and last name' 
+                            value={userName} onChange={ev => setUserName(ev.target.value)} />
                         <input type='email' disabled={true} value={session.data.user.email} />
                         <input 
                             type='tel' placeholder='Phone' 
@@ -138,11 +150,11 @@ export default function profilePage() {
                         <input 
                             type='text' placeholder='Street Address'
                             value={streetAddress} onChange={ev => setStreetAddress(ev.target.value)}/>
-                        <div className='flex gap-4'>
-                             <input 
+                        <div className='flex gap-2'>
+                             <input style={{'margin':'0'}}
                                 type='text' placeholder='City'
                                 value={city} onChange={ev => setCity(ev.target.value)} />
-                             <input 
+                             <input style={{'margin':'0'}}
                                 type='text' placeholder='Pin Code'
                                 value={pinCode} onChange={ev => setPinCode(ev.target.value)} />
                         </div>
