@@ -15,3 +15,12 @@ export async function PUT(req) {
 
     return Response.json(true);
 }
+
+export async function GET() {
+    mongoose.connect(process.env.MONGO_URL);
+    const session = await getServerSession(authOptions);
+    const email = session.user.email;
+    return Response.json(
+        await User.findOne({email})
+    );
+}
