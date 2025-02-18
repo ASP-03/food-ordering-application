@@ -157,13 +157,13 @@ export default function profilePage() {
                         <div className='flex gap-2'>
                             <div>
                             <label>City</label>
-                             <input style={{'margin':'0'}}
+                             <input
                                 type='text' placeholder='City'
                                 value={city} onChange={ev => setCity(ev.target.value)} />
                             </div>
                             <div>
                             <label>Pin Code</label>   
-                             <input style={{'margin':'0'}}
+                             <input
                                 type='text' placeholder='Pin Code'
                                 value={pinCode} onChange={ev => setPinCode(ev.target.value)} />
                             </div> 
