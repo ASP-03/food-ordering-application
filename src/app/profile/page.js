@@ -16,6 +16,7 @@ export default function profilePage() {
     const [pinCode, setPinCode] = useState('')
     const [city, setCity] = useState('')
     const [country, setCountry] = useState('')
+    const[isAdmin, setIsAdmin] = useState(false)
     const {status} = session
 
     useEffect(() => {
@@ -29,6 +30,7 @@ export default function profilePage() {
                     setCity(data.city)
                     setPinCode(data.pinCode)
                     setCountry(data.country)
+                    setIsAdmin(data.admin)
                 })
             })
 
@@ -122,6 +124,16 @@ export default function profilePage() {
 
     return (
         <section className='mt-8'>
+            <div>
+                <Link href={'/profile'}>Profile</Link>
+                {isAdmin && (
+                    <>
+                       <Link href={'/categories'}>Categories</Link>
+                       <Link href={'/menu-items'}>Menu Items</Link>
+                       <Link href={'/users'}>Users</Link>
+                    </>
+                )}
+            </div>
             <h1 className='mb-4 text-center text-red-600 text-4xl'>
                 Profile
             </h1>
