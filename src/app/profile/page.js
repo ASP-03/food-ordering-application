@@ -4,8 +4,7 @@ import { redirect } from 'next/dist/server/api-utils'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { resolve } from 'path'
-import { rejects } from 'assert'
+import Link from 'next/link';
 
 export default function profilePage() {
     const session = useSession()
@@ -16,7 +15,7 @@ export default function profilePage() {
     const [pinCode, setPinCode] = useState('')
     const [city, setCity] = useState('')
     const [country, setCountry] = useState('')
-    const[isAdmin, setIsAdmin] = useState(false)
+    const [isAdmin, setIsAdmin] = useState(false)
     const {status} = session
 
     useEffect(() => {
@@ -124,7 +123,7 @@ export default function profilePage() {
 
     return (
         <section className='mt-8'>
-            <div>
+            <div className='flex gap-2 tabs'>
                 <Link href={'/profile'}>Profile</Link>
                 {isAdmin && (
                     <>
