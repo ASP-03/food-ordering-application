@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import Link from 'next/link';
+import UserTabs from '../components/layout/UserTabs'
 
 export default function profilePage() {
     const session = useSession()
@@ -110,9 +111,6 @@ export default function profilePage() {
     }
     
     
-    
-    
-
     if(status === 'loading') {
         return 'Loading...'
     }
@@ -123,20 +121,8 @@ export default function profilePage() {
 
     return (
         <section className='mt-8'>
-            <div className='flex gap-2 tabs'>
-                <Link href={'/profile'}>Profile</Link>
-                {isAdmin && (
-                    <>
-                       <Link href={'/categories'}>Categories</Link>
-                       <Link href={'/menu-items'}>Menu Items</Link>
-                       <Link href={'/users'}>Users</Link>
-                    </>
-                )}
-            </div>
-            <h1 className='mb-4 text-center text-red-600 text-4xl'>
-                Profile
-            </h1>
-            <div className='max-w-md mx-auto'>
+            <UserTabs isAdmin={isAdmin} />
+            <div className='max-w-md mx-auto mt-8'>
                 <div className='flex gap-4'>
                     <div>
                         <div className='p-2 rounded-lg relative max-w-[120px]'>
