@@ -23,7 +23,7 @@ export default function UserTabs({isAdmin}) {
                             Menu Items
                         </Link>
                         <Link 
-                            href={'/users'}>
+                            href={'/user'}>
                             Users
                         </Link>
                     </>
