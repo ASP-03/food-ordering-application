@@ -17,6 +17,7 @@ export default function profilePage() {
     const [city, setCity] = useState('')
     const [country, setCountry] = useState('')
     const [isAdmin, setIsAdmin] = useState(false)
+    const [profileFetched, setProfileFetched] = useState(false)
     const {status} = session
 
     useEffect(() => {
@@ -31,6 +32,7 @@ export default function profilePage() {
                     setPinCode(data.pinCode)
                     setCountry(data.country)
                     setIsAdmin(data.admin)
+                    setProfileFetched(true)
                 })
             })
 
@@ -111,7 +113,7 @@ export default function profilePage() {
     }
     
     
-    if(status === 'loading') {
+    if(status === 'loading' || !profileFetched) {
         return 'Loading...'
     }
 
