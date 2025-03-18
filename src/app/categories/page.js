@@ -15,9 +15,11 @@ export default function CategoriesPage() {
     if(!isAdmin) {
         return 'Not an admin';
     }
+    
     return(
         <section className="mt-8 max-w-lg mx-auto">
             <UserTabs isAdmin={true} />
+            categories
         </section>
     )
 }
