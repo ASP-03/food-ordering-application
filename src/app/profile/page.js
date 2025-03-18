@@ -26,11 +26,11 @@ export default function profilePage() {
             setImage(session.data.user.image)
             fetch('/api/profile').then(response => {
                 response.json().then(data => {
-                    setPhone(data.phone)
-                    setStreetAddress(data.streetAddress)
-                    setCity(data.city)
-                    setPinCode(data.pinCode)
-                    setCountry(data.country)
+                    setPhone(data.phone || '')
+                    setStreetAddress(data.streetAddress || '')
+                    setCity(data.city || '')
+                    setPinCode(data.pinCode || '')
+                    setCountry(data.country || '')
                     setIsAdmin(data.admin)
                     setProfileFetched(true)
                 })
