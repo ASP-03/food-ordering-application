@@ -10,10 +10,10 @@ export default function CategoriesPage() {
                 setIsAdmin(data.admin)
             })
         }) 
-    })
+    }, [])
 
     if(!isAdmin) {
-        return 'Not an admin'
+        return 'Not an admin';
     }
     return(
         <section className="mt-8 max-w-lg mx-auto">

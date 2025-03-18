@@ -2,7 +2,6 @@ import { model, models, Schema } from "mongoose";
 
 const UserInfoSchema = new Schema({
     email: {type: String, required: true},
-    phone: {type: String},
     streetAddress: {type: String},
     city: {type: String},
     pinCode: {type: String},
@@ -10,4 +9,4 @@ const UserInfoSchema = new Schema({
     admin: {type: Boolean, default: false},
 }, {timestamps: true})
 
-export const UserInfo = models?.UserInfo || model('UserInfo', UserInfoSchema)
+export const UserInfo = models?.UserInfo || model('UserInfo', UserInfoSchema);
