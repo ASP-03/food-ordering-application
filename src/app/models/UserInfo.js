@@ -7,7 +7,6 @@ const UserInfoSchema = new Schema({
     pinCode: {type: String},
     country: {type: String},
     admin: {type: Boolean, default: false},
-    phone: {type: String},
 }, {timestamps: true})
 
 export const UserInfo = models?.UserInfo || model('UserInfo', UserInfoSchema);
