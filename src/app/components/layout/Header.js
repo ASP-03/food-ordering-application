@@ -28,8 +28,9 @@ export default function Header(){
               <Link href={'/profile'} className='whitespace-nowrap'>
                  Hello, {userName}
               </Link>
-              <button onClick={() => signOut({callbackUrl: '/'})} className="bg-red-600 rounded-full text-white px-8 py-2">
-              Logout
+              <button onClick={() => signOut()} 
+                 className="bg-red-600 rounded-full text-white px-8 py-2">
+                 Logout
               </button>
             </>
             
