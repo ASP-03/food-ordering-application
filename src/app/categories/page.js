@@ -11,12 +11,16 @@ export default function CategoriesPage() {
     const {loading:profileLoading, data:profileData} = adminInfo()
 
     useEffect(() => {
+         fetchCategories()
+    }, [])
+
+    function fetchCategories() {
         fetch('/api/categories').then(res => {
             res.json().then(categories => {
                 setCategories(categories)
             })
         })
-    }, [])
+    }
 
     async function handleNewCategorySubmit(ev) {
         ev.preventDefault()
@@ -26,6 +30,8 @@ export default function CategoriesPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({name:newCategoryName}),
            })
+           fetchCategories()
+           
            if (response.ok) 
             resolve()
            else
@@ -65,9 +71,14 @@ export default function CategoriesPage() {
                   </div>
                 </div>
             </form>
-            <ul>
-
-            </ul>
+            <div>
+                <h2 className="mt-4 text-sm text-gray-500">Edit Category:</h2>
+                {categories?.length > 0 && categories.map(c => (
+                    <button key={c._id || c.name} className="bg-gray-200 rounded-xl p-2 px-4 flex gap-1 cursor-pointer mb-2">
+                        <span>{c.name}</span>
+                    </button>
+                ))}
+            </div>
         </section>
     )
 }
