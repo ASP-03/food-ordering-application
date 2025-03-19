@@ -4,16 +4,24 @@ import UserTabs from "../components/layout/UserTabs";
 
 export default function CategoriesPage() {
     const[isAdmin, setIsAdmin] = useState(false)
+    const [adminInfoLoading, setAdminInfoLoading] = useState(true)
+
     useEffect(() => {
+        setAdminInfoLoading(true)
         fetch('/api/profile').then(response => {
             response.json().then(data => {
                 setIsAdmin(data.admin)
+                setAdminInfoLoading(false)
             })
         }) 
     }, [])
 
-    if(!isAdmin) {
-        return 'Not an admin';
+    if (adminInfoLoading) {
+        return 'Loading user info...'
+    }
+
+    if (!isAdmin) {
+        return 'Not an admin'
     }
     
     return(
