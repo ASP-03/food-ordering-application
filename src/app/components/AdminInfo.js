@@ -2,10 +2,10 @@ import { useEffect, useState } from "react"
 
 export function adminInfo(){
     const[data, setData] = useState(false)
-        const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true)
     
         useEffect(() => {
-            setLoading(false)
+            setLoading(true)
             fetch('/api/profile').then(response => {
                 response.json().then(data => {
                     setData(data)

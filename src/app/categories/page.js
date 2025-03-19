@@ -1,7 +1,6 @@
 'use client';
-import { useEffect, useState } from "react";
 import UserTabs from "../components/layout/UserTabs";
-import { adminInfo } from "../components/AdminInfo";
+import { adminInfo } from "../components/adminInfo";
 
 export default function CategoriesPage() {
 
@@ -11,7 +10,7 @@ export default function CategoriesPage() {
         return 'Loading user info...'
     }
 
-    if (!profileData.admin) {
+    if (!profileData?.admin) {
         return 'Not an admin'
     }
     
