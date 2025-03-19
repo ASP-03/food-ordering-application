@@ -20,11 +20,13 @@ export default function CategoriesPage() {
             <form className="mt-8">
                 <div className="flex gap-2 items-end">
                   <div className="grow">
-                    <label>New Category</label>
+                    <label>New Category Name</label>
                     <input type='text'/>
                   </div>
                   <div className="pb-2">
-                    <button className="border border-red-600" type="submit">Create</button>
+                    <button className="border border-red-600" type="submit">
+                        Create
+                    </button>
                   </div>
                 </div>
             </form>
