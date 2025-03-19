@@ -47,7 +47,7 @@ export default function CategoriesPage() {
                     <label>New Category Name</label>
                     <input type='text'
                         value={newCategoryName}
-                        onchange={ev => setNewCategoryName(ev.target.value)}/>
+                        onChange={ev => setNewCategoryName(ev.target.value)}/>
                   </div>
                   <div className="pb-2">
                     <button className="border border-red-600" type="submit">
