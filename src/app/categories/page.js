@@ -1,32 +1,23 @@
 'use client';
 import { useEffect, useState } from "react";
 import UserTabs from "../components/layout/UserTabs";
+import { adminInfo } from "../components/AdminInfo";
 
 export default function CategoriesPage() {
-    const[isAdmin, setIsAdmin] = useState(false)
-    const [adminInfoLoading, setAdminInfoLoading] = useState(true)
 
-    useEffect(() => {
-        setAdminInfoLoading(true)
-        fetch('/api/profile').then(response => {
-            response.json().then(data => {
-                setIsAdmin(data.admin)
-                setAdminInfoLoading(false)
-            })
-        }) 
-    }, [])
+    const {loading:profileLoading, data:profileData} = adminInfo()
 
-    if (adminInfoLoading) {
+    if (profileLoading) {
         return 'Loading user info...'
     }
 
-    if (!isAdmin) {
+    if (profileData.admin) {
         return 'Not an admin'
     }
     
     return(
         <section className="mt-8 max-w-lg mx-auto">
-            <UserTabs isAdmin={true} />
+            <UserTabs isAdmin={true} /> 
             categories
         </section>
     )
