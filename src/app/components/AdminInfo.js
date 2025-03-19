@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-export function AdminInfo(){
+export function adminInfo(){
     const[data, setData] = useState(false)
         const [loading, setLoading] = useState(true)
     

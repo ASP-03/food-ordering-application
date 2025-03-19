@@ -11,14 +11,17 @@ export default function CategoriesPage() {
         return 'Loading user info...'
     }
 
-    if (profileData.admin) {
+    if (!profileData.admin) {
         return 'Not an admin'
     }
     
     return(
-        <section className="mt-8 max-w-lg mx-auto">
+        <section className="mt-8 max-w-md mx-auto">
             <UserTabs isAdmin={true} /> 
-            categories
+            <form className="mt-8">
+                <label>New Category</label>
+                <input type='text'/>
+            </form>
         </section>
     )
 }
