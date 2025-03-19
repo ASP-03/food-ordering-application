@@ -1,13 +1,22 @@
 'use client';
 import UserTabs from "../components/layout/UserTabs";
 import { adminInfo } from "../components/adminInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function CategoriesPage() {
 
     const [newCategoryName, setNewCategoryName] = useState('')
+    const [categories, setCategories] = useState([])
     const {loading:profileLoading, data:profileData} = adminInfo()
+
+    useEffect(() => {
+        fetch('/api/categories').then(res => {
+            res.json().then(categories => {
+                setCategories(categories)
+            })
+        })
+    }, [])
 
     async function handleNewCategorySubmit(ev) {
         ev.preventDefault()
@@ -56,6 +65,9 @@ export default function CategoriesPage() {
                   </div>
                 </div>
             </form>
+            <ul>
+
+            </ul>
         </section>
     )
 }
