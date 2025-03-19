@@ -18,8 +18,15 @@ export default function CategoriesPage() {
         <section className="mt-8 max-w-md mx-auto">
             <UserTabs isAdmin={true} /> 
             <form className="mt-8">
-                <label>New Category</label>
-                <input type='text'/>
+                <div className="flex gap-2 items-end">
+                  <div className="grow">
+                    <label>New Category</label>
+                    <input type='text'/>
+                  </div>
+                  <div className="pb-2">
+                    <button className="border border-red-600" type="submit">Create</button>
+                  </div>
+                </div>
             </form>
         </section>
     )
