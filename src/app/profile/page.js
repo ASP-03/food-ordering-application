@@ -1,6 +1,6 @@
 'use client'
 import { useSession } from 'next-auth/react'
-import { redirect } from 'next/dist/server/api-utils'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
@@ -9,6 +9,7 @@ import UserTabs from '../components/layout/UserTabs'
 
 export default function profilePage() {
     const session = useSession()
+    const router = useRouter()
     const [userName, setUserName] = useState('')
     const [image, setImage] = useState('')
     const [phone, setPhone] = useState('')
@@ -118,7 +119,8 @@ export default function profilePage() {
     }
 
     if(status === 'unauthenticated') {
-        return redirect('/login')
+        router.push('/login')
+        return null
     }
 
     return (
