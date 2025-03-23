@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import UserTabs from '../components/layout/UserTabs'
+import EditImage from '../components/layout/EditImage'
 
 export default function profilePage() {
     const session = useSession()
@@ -61,56 +62,6 @@ export default function profilePage() {
             error: 'Error',
         })
     }
-
-    async function handleFileChange(ev) {
-        const files = ev.target.files;
-        if (files?.length === 1) {
-            const data = new FormData()
-            data.append('file', files[0])
-    
-            const uploadPromise = new Promise(async (resolve, reject) => {
-                try {
-                    const controller = new AbortController(); // Abort request on timeout
-                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
-    
-                    const response = await fetch('/api/upload', {
-                        method: 'POST',
-                        body: data,
-                        signal: controller.signal, // Attach abort controller
-                    });
-    
-                    clearTimeout(timeoutId); // Clear timeout if request succeeds
-    
-                    if (!response.ok) {
-                        reject(new Error('Upload failed: Server responded with error'))
-                        return;
-                    }
-    
-                    const result = await response.json();
-    
-                    if (!result.url) {
-                        reject(new Error('Invalid response: No image URL returned'))
-                        return;
-                    }
-    
-                    setImage(result.url);
-                    resolve(); // Only resolves when upload is 100% successful
-                } catch (error) {
-                    if (error.name === 'AbortError') {
-                        reject(new Error('Upload timeout: Server took too long to respond'))
-                    } else {
-                        reject(error); // Ensure all errors cause rejection
-                    }
-                }
-            })
-    
-            await toast.promise(uploadPromise, {
-                loading: 'Uploading...',
-                success: 'Uploaded!',
-                error: (err) => err.message || 'Upload Unsuccessful', // Shows the actual error message
-            })
-        }
-    }
     
     
     if(status === 'loading' || !profileFetched) {
@@ -129,14 +80,7 @@ export default function profilePage() {
                 <div className='flex gap-4'>
                     <div>
                         <div className='p-2 rounded-lg relative max-w-[120px]'>
-                            {image && (
-                                <Image className='rounded-lg w-full h-full mb-1' src={image || '/default-avatar.png'}
-                                    width={250} height={250} alt={'avatar'} />
-                            )}
-                            <label>
-                                <input type='file' className='hidden' onChange={handleFileChange} />
-                                <span className='block border border-gray-300 rounded-lg p-2 text-center cursor-pointer'>Edit</span>
-                            </label>
+                            <EditImage link={image} setLink={setImage} />
                         </div>
                     </div>
                     <form className='grow' onSubmit={handleProfileUpdate}>
