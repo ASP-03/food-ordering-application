@@ -9,6 +9,7 @@ export default function CategoriesPage() {
     const [newCategoryName, setNewCategoryName] = useState('')
     const [categories, setCategories] = useState([])
     const {loading:profileLoading, data:profileData} = adminInfo()
+    const [editCategory, setEditCategory] = useState(null)
 
     useEffect(() => {
          fetchCategories()
@@ -60,14 +61,19 @@ export default function CategoriesPage() {
             <form className="mt-8" onSubmit={handleNewCategorySubmit}>
                 <div className="flex gap-2 items-end">
                   <div className="grow">
-                    <label>New Category Name</label>
+                    <label>
+                        {editCategory ? 'Update Category' : 'New Category name'}
+                        {editCategory && (
+                            <>: <b>{editCategory.name}</b></>
+                        )}
+                    </label>
                     <input type='text'
                         value={newCategoryName}
                         onChange={ev => setNewCategoryName(ev.target.value)}/>
                   </div>
                   <div className="pb-2">
                     <button className="border border-red-600" type="submit">
-                        Create
+                        {editCategory ? 'Update' : 'Create'}
                     </button>
                   </div>
                 </div>
@@ -75,7 +81,10 @@ export default function CategoriesPage() {
             <div>
                 <h2 className="mt-4 text-sm text-gray-500">Edit Category:</h2>
                 {categories?.length > 0 && categories.map(c => (
-                    <button key={c._id || c.name} className="bg-gray-200 rounded-xl p-2 px-4 flex gap-1 cursor-pointer mb-1">
+                    <button 
+                        onClick={() => setEditCategory(c)} 
+                        key={c._id || c.name} 
+                        className="bg-gray-200 rounded-xl p-2 px-4 flex gap-1 cursor-pointer mb-1">
                         <span>{c.name}</span>
                     </button>
                 ))}
