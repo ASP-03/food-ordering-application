@@ -30,7 +30,7 @@ label + input{
     margin-top: -2px;
 }
 
-button{
+button, .button{
     @apply block w-full text-gray-700 font-semibold border border-gray-300 rounded-xl px-6 py-2;
 }
 button[type="submit"], .submit{

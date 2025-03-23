@@ -4,7 +4,7 @@ import { adminInfo } from "../components/adminInfo";
 import EditImage from "../components/layout/EditImage";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 export default function MenuItemsPage() {
 
@@ -24,7 +24,7 @@ export default function MenuItemsPage() {
             <UserTabs isAdmin={true} />
             <div className="mt-8">
                 <Link 
-                    className=""
+                    className="button"
                     href={'/menu-items/new'}>
                     Create a new menu item
                 </Link>
