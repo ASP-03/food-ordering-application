@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 
 export default function CategoriesPage() {
 
-    const [newCategoryName, setNewCategoryName] = useState('')
+    const [categoryName, setCategoryName] = useState('')
     const [categories, setCategories] = useState([])
     const {loading:profileLoading, data:profileData} = adminInfo()
     const [editCategory, setEditCategory] = useState(null)
@@ -23,16 +23,21 @@ export default function CategoriesPage() {
         })
     }
 
-    async function handleNewCategorySubmit(ev) {
+    async function handleCategorySubmit(ev) {
         ev.preventDefault()
         const creationPromise = new Promise(async (resolve, reject) => {
+            const data = {name:categoryName}
+            if (editCategory) {
+                data._id = editCategory._id
+            }  
             const response = await fetch('/api/categories', {
-                method: 'POST',
+                method: editCategory ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({name:newCategoryName}),
+                body: JSON.stringify(data),
            })
-           setNewCategoryName('')
+           setCategoryName('')
            fetchCategories()
+           setEditCategory(null)
            
            if (response.ok) 
             resolve()
@@ -41,8 +46,12 @@ export default function CategoriesPage() {
         })
 
         await toast.promise(creationPromise, {
-            loading: 'Creating your new category...',
-            success: 'Category created successfully',
+            loading: editCategory 
+                   ? 'Updating Category...' 
+                   : 'Creating your new category...',
+            success: editCategory 
+                   ? 'Category updated successfully' 
+                   : 'Category created successfully',
             error: 'Error, sorry...',
         })
     }
@@ -58,7 +67,7 @@ export default function CategoriesPage() {
     return(
         <section className="mt-8 max-w-md mx-auto">
             <UserTabs isAdmin={true} /> 
-            <form className="mt-8" onSubmit={handleNewCategorySubmit}>
+            <form className="mt-8" onSubmit={handleCategorySubmit}>
                 <div className="flex gap-2 items-end">
                   <div className="grow">
                     <label>
@@ -68,8 +77,8 @@ export default function CategoriesPage() {
                         )}
                     </label>
                     <input type='text'
-                        value={newCategoryName}
-                        onChange={ev => setNewCategoryName(ev.target.value)}/>
+                        value={categoryName}
+                        onChange={ev => setCategoryName(ev.target.value)}/>
                   </div>
                   <div className="pb-2">
                     <button className="border border-red-600" type="submit">
@@ -82,7 +91,10 @@ export default function CategoriesPage() {
                 <h2 className="mt-4 text-sm text-gray-500">Edit Category:</h2>
                 {categories?.length > 0 && categories.map(c => (
                     <button 
-                        onClick={() => setEditCategory(c)} 
+                        onClick={() => {
+                            setEditCategory(c);
+                            setCategoryName(c.name);
+                        }} 
                         key={c._id || c.name} 
                         className="bg-gray-200 rounded-xl p-2 px-4 flex gap-1 cursor-pointer mb-1">
                         <span>{c.name}</span>

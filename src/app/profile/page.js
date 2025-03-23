@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import Link from 'next/link';
 import UserTabs from '../components/layout/UserTabs'
 
 export default function profilePage() {
