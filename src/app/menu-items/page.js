@@ -5,6 +5,7 @@ import EditImage from "../components/layout/EditImage";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import Right from "../components/icons/Right"
 
 export default function MenuItemsPage() {
 
@@ -27,6 +28,7 @@ export default function MenuItemsPage() {
                     className="button"
                     href={'/menu-items/new'}>
                     Create a new menu item
+                    <Right />
                 </Link>
             </div>
         </section>
