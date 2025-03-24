@@ -40,16 +40,21 @@ export default function MenuItemsPage() {
     
             <div className="mt-8 flex flex-col items-center">
                 <h2 className="text-sm text-gray-500">Edit menu item:</h2>
-                <div className="grid grid-cols-3">
+                <div className="grid grid-cols-3 gap-2">
                     {menuItems.length > 0 ? (
                         menuItems.map(item => (
                           <Link
                             key={item._id}
                             href={'/menu-items/edit/'+item._id} 
-                            className="button mb-1 flex-col text-blue-500 hover:underline">
+                            className="bg-gray-200 rounded-lg p-4">
                             <div className="relative">
-                            <Image src = {item.image} alt = {''} width = {100} height = {100} />
+                            <Image 
+                                className="rounded-md"
+                                src = {item.image} alt = {''} width = {200} height = {200} />
                             </div> 
+                            <div className="text-center">
+                                
+                            </div>
                             {item.name}
                           </Link>
                         ))
