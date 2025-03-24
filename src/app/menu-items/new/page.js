@@ -1,4 +1,9 @@
+'use client';
+import { useState } from "react";
 import { adminInfo } from "../../components/adminInfo";
+import UserTabs from "../../components/layout/UserTabs";
+import EditImage from "../../components/layout/EditImage";
+import toast from "react-hot-toast";
 
 export default function NewMenuItemPage() {
 
