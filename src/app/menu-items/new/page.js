@@ -4,6 +4,8 @@ import { adminInfo } from "../../components/adminInfo";
 import UserTabs from "../../components/layout/UserTabs";
 import EditImage from "../../components/layout/EditImage";
 import toast from "react-hot-toast";
+import Link from "next/link";
+import Left from "../../components/icons/Left";
 
 export default function NewMenuItemPage() {
 
@@ -47,6 +49,12 @@ export default function NewMenuItemPage() {
     return (
         <section className="mt-8">
             <UserTabs isAdmin={true} />
+            <div  className="max-w-md mx-auto mt-8">
+                <Link href={'/menu-items'} className="button">
+                    <Left /> 
+                    <span>Show all menu items</span>
+                </Link>
+            </div>
             <form onSubmit={handleFormSubmit} className="mt-8 max-w-md mx-auto">
               <div className="grid items-start gap-4" 
                    style={{gridTemplateColumns:'.3fr .7fr'}}>
