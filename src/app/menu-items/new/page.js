@@ -1,6 +1,6 @@
 'use client';
 import { useState } from "react";
-import { adminInfo } from "../../components/adminInfo";
+import { adminInfo } from "../../components/AdminInfo";
 import UserTabs from "../../components/layout/UserTabs";
 import EditImage from "../../components/layout/EditImage";
 import toast from "react-hot-toast";
