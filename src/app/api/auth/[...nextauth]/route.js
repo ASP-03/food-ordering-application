@@ -18,6 +18,7 @@ export const authOptions = {
     }),
     CredentialsProvider({
       name: "Credentials",
+      id: "credentials",
       credentials: {
         email: { label: "Email", type: "email", placeholder: "test@example.com" },
         password: { label: "Password", type: "password" },
@@ -30,18 +31,46 @@ export const authOptions = {
 
         const user = await User.findOne({ email });
         if (user && await bcrypt.compare(password, user.password)) {
-          return { id: user._id, name: user.name, email: user.email }; 
+          return { 
+            id: user._id.toString(),
+            _id: user._id.toString(),
+            name: user.name, 
+            email: user.email,
+            image: user.image
+          }; 
         }
         return null;
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token._id = user.id || user._id;
+        token.name = user.name;
+        token.email = user.email;
+        token.image = user.image;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user._id = token._id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.image = token.image;
+      }
+      return session;
+    }
+  },
+  session: {
+    strategy: "jwt",
+  },
   pages: {
-    signIn: "/auth/signin",
-    error: "/auth/error",
+    signIn: "/login",
   },
 };
 
-const handler = (req, res) => NextAuth(req, res, authOptions);
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
