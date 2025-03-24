@@ -1,23 +1,38 @@
-import { Category } from "../../models/Category"
+import connectDB from "../../../utils/db";
+import { Category } from "../../models/Category";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
-    mongoose.connect(process.env.MONGO_URL)
-    const {name} = await req.json()
-    const categoryDoc = await Category.create({name})
-    return Response.json(categoryDoc)
+    await connectDB(); 
+
+    try {
+        const { name } = await req.json();
+        const categoryDoc = await Category.create({ name });
+        return NextResponse.json(categoryDoc, { status: 201 });
+    } catch (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 }
 
 export async function PUT(req) {
-    mongoose.connect(process.env.MONGO_URL)
-    const {_id, name} = await req.json()
-    await Category.updateOne({_id}, {name})
-    return Response.json(true)    
+    await connectDB();
+
+    try {
+        const { _id, name } = await req.json();
+        await Category.updateOne({ _id }, { name });
+        return NextResponse.json({ success: true }, { status: 200 });
+    } catch (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 }
 
 export async function GET() {
-    mongoose.connect(process.env.MONGO_URL)
-    return Response.json(
-        await Category.find()
-    )
-    
+    await connectDB();
+
+    try {
+        const categories = await Category.find();
+        return NextResponse.json(categories, { status: 200 });
+    } catch (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 }
