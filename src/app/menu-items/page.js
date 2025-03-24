@@ -40,22 +40,25 @@ export default function MenuItemsPage() {
     
             <div className="mt-8 flex flex-col items-center">
                 <h2 className="text-sm text-gray-500">Edit menu item:</h2>
-                
-                {menuItems.length > 0 ? (
-                    menuItems.map(item => (
-                        <Link
+                <div className="grid grid-cols-3">
+                    {menuItems.length > 0 ? (
+                        menuItems.map(item => (
+                          <Link
                             key={item._id}
                             href={'/menu-items/edit/'+item._id} 
-                            className="button mb-1 text-blue-500 hover:underline">
+                            className="button mb-1 flex-col text-blue-500 hover:underline">
                             <div className="relative">
                             <Image src = {item.image} alt = {''} width = {100} height = {100} />
                             </div> 
                             {item.name}
-                        </Link>
-                    ))
-                ) : (
-                    <p className="text-gray-400">No menu items available.</p>
-                )}
+                          </Link>
+                        ))
+                    ) : (
+                        <p className="text-gray-400">No menu items available.</p>
+                    )}
+
+                </div>
+                
             </div>
         </section>
     )

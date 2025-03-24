@@ -14,7 +14,7 @@ export default function HomeMenu(){
                     <Image src={'/salad2.jpg'} width={156} height={305} alt={'salad'} />
                  </div>
               </div>
-             <div className="text-center mb-4">
+             <div className="text-center mb-4 mt-4">
                 <SectionHeaders 
                    subHeader={'CHECK OUT OUR'}
                    mainHeader={'MENU'} />
