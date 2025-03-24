@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Right from "../components/icons/Right";
 import { adminInfo } from "../components/AdminInfo";
+import Image from "next/image";
 
 export default function MenuItemsPage() {
 
@@ -42,11 +43,13 @@ export default function MenuItemsPage() {
                 
                 {menuItems.length > 0 ? (
                     menuItems.map(item => (
-                        <Link 
-                            key={item._id} 
-                            href={`/menu-items/edit/${item._id}`} 
-                            className="block mb-1 text-blue-500 hover:underline"
-                        >
+                        <Link
+                            key={item._id}
+                            href={'/menu-items/edit/'+item._id} 
+                            className="button mb-1 text-blue-500 hover:underline">
+                            <div className="relative">
+                            <Image src = {item.image} alt = {''} width = {100} height = {100} />
+                            </div> 
                             {item.name}
                         </Link>
                     ))
