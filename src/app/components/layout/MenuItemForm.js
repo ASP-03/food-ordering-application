@@ -1,5 +1,6 @@
 import { useState } from "react";
 import EditImage from "./EditImage";
+import Trash from "../icons/Trash";
 
 export default function MenuItemForm({onSubmit, menuItem}) {
 
@@ -24,6 +25,11 @@ export default function MenuItemForm({onSubmit, menuItem}) {
             return newSizes
         })
     }
+
+    function removeSize(indexToRemove) {
+        setSizes(prev => prev.filter((v, index) => index !== indexToRemove))
+    }
+
     return (
         <form
             onSubmit={ev => onSubmit(ev, {image, name, description, basePrice})} className="mt-8 max-w-md mx-auto">
@@ -73,13 +79,22 @@ export default function MenuItemForm({onSubmit, menuItem}) {
                                     onChange={ev => editSize(ev, index, 'price')}
                                     />
                                 </div>
+                                <div>
+                                    <button 
+                                        type="button"
+                                        onClick={() => removeSize(index)}
+                                        className="bg-white h-10 mt-6 px-2">
+                                        <Trash />
+                                    </button>
+                                </div>
                             </div>
                            ))}
 
                             <button
-                             type="button" 
-                             onClick={addSize}
-                             className="bg-white">Add item size
+                                type="button" 
+                                onClick={addSize}
+                                className="bg-white">
+                                Add item size
                             </button>
                         </div>
                         <button type="submit">Save</button>
