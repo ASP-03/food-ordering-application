@@ -39,9 +39,25 @@ export async function GET() {
 }
 
 export async function DELETE(req) {
-    mongoose.connect(process.env.MONGO_URL);
-    const url = new URL(req.url);
-    const _id = url.searchParams.get('_id');
-      await Category.deleteOne({_id});
-    return Response.json(true);
-  }
+    try {
+        await connectDB();
+
+        const url = new URL(req.url);
+        const _id = url.searchParams.get('_id');
+
+        if (!_id) {
+            return NextResponse.json({ error: "Category ID is required" }, { status: 400 });
+        }
+
+        const deletedCategory = await Category.findByIdAndDelete(_id);
+
+        if (!deletedCategory) {
+            return NextResponse.json({ error: "Category not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({ success: true, message: "Category deleted" });
+    } catch (error) {
+        console.error("Delete Category Error:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}
