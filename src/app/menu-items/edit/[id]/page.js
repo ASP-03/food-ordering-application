@@ -7,6 +7,7 @@ import { redirect, useParams } from "next/navigation";
 import { adminInfo } from "../../../components/AdminInfo";
 import Left from "../../../components/icons/Left";
 import MenuItemForm from "../../../components/layout/MenuItemForm";
+import DeleteButton from "../../../components/DeleteButton";
 
 export default function EditMenuItemPage() {
     const { id } = useParams();
@@ -88,11 +89,12 @@ export default function EditMenuItemPage() {
                 </Link>
             </div>
             <MenuItemForm menuItem={menuItem} onSubmit={handleFormSubmit} />
-            <div className="max-w-md mx-auto mt-4">
+            <div className="max-w-md mx-auto mt-2">
                 <div className="max-w-xs ml-auto pl-4">
-                    <button onClick={handleDeleteClick}>
-                        Delete this item
-                    </button>
+                    <DeleteButton 
+                        label="Delete this item"
+                        onDelete={handleDeleteClick} 
+                    />
                 </div>
             </div>
         </section>
