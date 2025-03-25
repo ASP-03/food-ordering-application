@@ -41,3 +41,28 @@ export async function GET(req) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
+
+
+export async function DELETE(req) {
+    try {
+        await connectDB(); // Ensure DB connection
+
+        const url = new URL(req.url);
+        const _id = url.searchParams.get('_id');
+
+        if (!_id) {
+            return NextResponse.json({ error: "Item ID is required" }, { status: 400 });
+        }
+
+        const deletedMenuItem = await MenuItem.findByIdAndDelete(_id);
+
+        if (!deletedMenuItem) {
+            return NextResponse.json({ error: "Item not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({ success: true, message: "Item deleted successfully" });
+    } catch (error) {
+        console.error("Delete Item Error:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}
