@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import connectDB from "../../../utils/db";
 import { Category } from "../../models/Category";
 import { NextResponse } from "next/server";
@@ -36,3 +37,11 @@ export async function GET() {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
+
+export async function DELETE(req) {
+    mongoose.connect(process.env.MONGO_URL);
+    const url = new URL(req.url);
+    const _id = url.searchParams.get('_id');
+      await Category.deleteOne({_id});
+    return Response.json(true);
+  }
