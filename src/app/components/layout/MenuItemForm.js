@@ -7,7 +7,7 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
     const [name, setName] = useState(menuItem?.name || "");
     const [description, setDescription] = useState(menuItem?.description || "");
     const [basePrice, setBasePrice] = useState(menuItem?.basePrice || "");
-    const [sizes, setSizes] = useState([]);
+    const [sizes, setSizes] = useState(menuItem?.sizes || []);
     const [addToppingsPrice, setAddToppingsPrice] = useState(menuItem?.addToppingsPrice || [])
     const [category, setCategory] = useState(menuItem?.category || '') 
     const [categories, setCategories] = useState([])
@@ -24,7 +24,7 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
         <form
             onSubmit={(ev) => onSubmit(ev, { image, name, description, basePrice, sizes, addToppingsPrice, category,})}
             className="mt-8 max-w-2xl mx-auto">
-            <div className="grid items-start gap-4" style={{ gridTemplateColumns: ".3fr .7fr" }}>
+            <div className="md:grid items-start gap-4" style={{ gridTemplateColumns: ".3fr .7fr" }}>
                 <div className="py-2">
                     <EditImage link={image} setLink={setImage} />
                 </div>
@@ -49,14 +49,14 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
                     <MenuItemPriceProps 
                         name={'Sizes'} 
                         addLabel={'Add item size'} 
-                        sizes={sizes} 
-                        setSizes={setSizes} 
+                        props={sizes} 
+                        setProps={setSizes} 
                     />
                     <MenuItemPriceProps 
                         name={'Add Toppings'}
                         addLabel={'Add toppings price'}
-                        sizes={addToppingsPrice}
-                        setSizes={setAddToppingsPrice}
+                        props={addToppingsPrice}
+                        setProps={setAddToppingsPrice}
                     />                 
 
                     <button type="submit">Save</button>
