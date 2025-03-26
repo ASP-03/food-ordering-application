@@ -1,7 +1,7 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import { User } from "../../../models/User";
 import bcrypt from "bcrypt";
-import NextAuth from "next-auth";
+import NextAuth, {getServerSession} from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import client from "../../../components/lib/mongoConnect";
@@ -30,7 +30,7 @@ export const authOptions = {
         mongoose.connect(process.env.MONGO_URL);
 
         const user = await User.findOne({ email });
-        if (user && await bcrypt.compare(password, user.password)) {
+        if (user && bcrypt.compare(password, user.password)) {
           return { 
             id: user._id.toString(),
             _id: user._id.toString(),
@@ -43,33 +43,19 @@ export const authOptions = {
       },
     }),
   ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token._id = user.id || user._id;
-        token.name = user.name;
-        token.email = user.email;
-        token.image = user.image;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user._id = token._id;
-        session.user.name = token.name;
-        session.user.email = token.email;
-        session.user.image = token.image;
-      }
-      return session;
+}
+  export async function isAdmin() {
+    const session = await getServerSession(authOptions);
+    const userEmail = session?.user?.email;
+    if (!userEmail) {
+      return false;
     }
-  },
-  session: {
-    strategy: "jwt",
-  },
-  pages: {
-    signIn: "/login",
-  },
-};
+    const userInfo = await UserInfo.findOne({email:userEmail});
+    if (!userInfo) {
+      return false;
+    }
+    return userInfo.admin;
+  }
 
 const handler = NextAuth(authOptions);
 

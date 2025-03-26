@@ -40,8 +40,10 @@ export default function CategoriesPage() {
             fetchCategories();
             setEditCategory(null);
 
-            if (response.ok) resolve();
-            else reject();
+            if (response.ok) 
+                resolve();
+            else 
+                reject();
         });
 
         await toast.promise(creationPromise, {
@@ -52,7 +54,7 @@ export default function CategoriesPage() {
     }
 
     async function handleDeleteClick(_id) {
-        const promise = new Promise(async(resolve, reject) => {
+        const promise = new Promise(async (resolve, reject) => {
           const response = await fetch('/api/categories?_id='+_id, {
             method: 'DELETE',
           });
@@ -76,7 +78,7 @@ export default function CategoriesPage() {
         return 'Loading user info...';
     }
 
-    if (!profileData?.admin) {
+    if (!profileData.admin) {
         return 'Not an admin';
     }
 
