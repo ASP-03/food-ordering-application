@@ -1,6 +1,7 @@
 'use client';
 import { useState } from "react";
 import EditImage from "./EditImage";
+import { adminInfo } from "../AdminInfo";
 
 export default function UserForm({user, onSave}) {
 
@@ -11,6 +12,8 @@ export default function UserForm({user, onSave}) {
     const [pinCode, setPinCode] = useState(user?.pinCode || '')
     const [city, setCity] = useState(user?.city || '')
     const [country, setCountry] = useState(user?.country || '')
+    const [admin, setAdmin] = useState(user?.admin || false)
+    const {data:loggedInUserData} = adminInfo()
 
     return (
         <div className='flex gap-4'>
@@ -34,7 +37,7 @@ export default function UserForm({user, onSave}) {
                         <input 
                             type='text' placeholder='Street Address'
                             value={streetAddress} onChange={ev => setStreetAddress(ev.target.value)}/>
-                        <div className='flex gap-2'>
+                        <div className='grid grid-cols-2 gap-2'>
                             <div>
                             <label>City</label>
                              <input
@@ -47,12 +50,19 @@ export default function UserForm({user, onSave}) {
                                 type='text' placeholder='Pin Code'
                                 value={pinCode} onChange={ev => setPinCode(ev.target.value)} />
                             </div> 
-                             
-                        </div>
-                        <label>Country</label>
-                        <input 
-                                type='text' placeholder='Country'
-                                value={country} onChange={ev => setCountry(ev.target.value)} />
+                            {loggedInUserData.admin && (
+                                <div>
+                                    <label className="p-1 border border-8 inline-flex items-center gap-2 mb-4" htmlFor="adminCb">
+                                        <input
+                                            id="adminCb" type="checkbox" className="" value={'1'}
+                                            checked={admin}
+                                            onChange={ev => setAdmin(ev.target.checked)}
+                                        />
+                                    <span>Admin</span>
+                                    </label>
+                                </div>
+                            )}
+                        </div>    
                         <button type='submit'>Save</button>
                     </form>
                 </div>
