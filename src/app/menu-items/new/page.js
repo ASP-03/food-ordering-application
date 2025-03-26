@@ -29,7 +29,7 @@ export default function NewMenuItemPage() {
         })
 
         await toast.promise(savingPromise, {
-            loading: 'Saving this tast item',
+            loading: 'Saving this tasty item',
             success: 'Saved',
             error: 'Error'
         })
