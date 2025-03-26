@@ -8,7 +8,7 @@ export default function MenuItem({
             </div>
                  <h4 className="font-semibold text-xl my-3">{name}</h4>
                     <p className="text-gray-500 text-sm">
-                        Lorem ipsum doro sit amwt consectur adispsion
+                        {description}
                     </p>
                     <button className="mt-4 bg-red-600 text-white rounded-full px-8 py-2">
                         Add to cart Rs.{basePrice}

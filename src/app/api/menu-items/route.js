@@ -16,13 +16,44 @@ export async function POST(req) {
 }
 
 export async function PUT(req) {
-    mongoose.connect(process.env.MONGO_URL);
-    if (await isAdmin()) {
-      const {_id, ...data} = await req.json();
-      await MenuItem.findByIdAndUpdate(_id, data);
+    try {
+        await connectDB(); // Ensure database is connected
+
+        if (!await isAdmin(req)) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+        }
+
+        const { _id, category, ...data } = await req.json();
+
+        if (!_id) {
+            return NextResponse.json({ error: "Missing _id" }, { status: 400 });
+        }
+
+        // Validate ObjectId format for _id and category
+        if (!mongoose.Types.ObjectId.isValid(_id)) {
+            return NextResponse.json({ error: "Invalid _id format" }, { status: 400 });
+        }
+        
+        if (category && !mongoose.Types.ObjectId.isValid(category)) {
+            return NextResponse.json({ error: "Invalid category format" }, { status: 400 });
+        }
+
+        const updatedItem = await MenuItem.findByIdAndUpdate(
+            _id, 
+            { ...data, category: category || null }, // Avoid empty string for category
+            { new: true }
+        );
+
+        if (!updatedItem) {
+            return NextResponse.json({ error: "Menu item not found" }, { status: 404 });
+        }
+
+        return NextResponse.json(updatedItem, { status: 200 });
+    } catch (error) {
+        console.error("PUT Request Error:", error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    return Response.json(true);
-  }
+}
 
 export async function GET() {
     await connectDB();

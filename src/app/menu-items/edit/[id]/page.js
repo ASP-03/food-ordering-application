@@ -16,27 +16,29 @@ export default function EditMenuItemPage() {
     const { loading, data } = adminInfo();
 
     useEffect(() => {
-        fetch(`/api/menu-items`)
-            .then(res => res.json())
-            .then(items => {
-                const item = items.find(i => i._id === id);
-                setMenuItem(item);
-            });
-    }, [id]);
+        fetch('/api/menu-items').then(res => {
+          res.json().then(items => {
+            const item = items.find(i => i._id === id);
+            setMenuItem(item);
+          });
+        })
+      }, []);
 
-    async function handleFormSubmit(ev, formData) {
+    async function handleFormSubmit(ev, data) {
         ev.preventDefault();
-        formData = { ...formData, _id: id };
+        data = { ...data, _id: id };
 
         const savingPromise = new Promise(async (resolve, reject) => {
             const response = await fetch('/api/menu-items', {
                 method: 'PUT',
+                body: JSON.stringify(data),
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
             });
 
-            if (response.ok) resolve();
-            else reject();
+            if (response.ok) 
+                resolve();
+            else 
+                reject();
         });
 
         await toast.promise(savingPromise, {
@@ -50,12 +52,14 @@ export default function EditMenuItemPage() {
 
     async function handleDeleteClick() {
         const deletePromise = new Promise(async (resolve, reject) => {
-            const res = await fetch(`/api/menu-items?_id=${id}`, {
+            const res = await fetch('/api/menu-items?_id='+id, {
                 method: 'DELETE',
             });
 
-            if (res.ok) resolve();
-            else reject();
+            if (res.ok) 
+                resolve();
+            else 
+                reject();
         });
 
         await toast.promise(deletePromise, {
