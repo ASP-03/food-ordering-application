@@ -43,7 +43,41 @@ export const authOptions = {
       },
     }),
   ],
+
+
+ callbacks: {
+  async jwt({ token, user }) {
+    if (user) {
+      token._id = user.id || user._id;
+      token.name = user.name;
+      token.email = user.email;
+      token.image = user.image;
+    }
+    return token;
+  },
+  async session({ session, token }) {
+    if (token) {
+      session.user._id = token._id;
+      session.user.name = token.name;
+      session.user.email = token.email;
+      session.user.image = token.image;
+    }
+    return session;
+  }
+ },
+session: {
+  strategy: "jwt",
+},
+
+pages: {
+  signIn: "/auth/signin",
+  error: "/auth/error",
+  signIn: "/login",
+},
+
 }
+
+
   export async function isAdmin() {
     const session = await getServerSession(authOptions);
     const userEmail = session?.user?.email;
