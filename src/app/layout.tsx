@@ -21,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={roboto.variable}>
-      <body className="antialiased">
+    <html lang="en" className="scroll-smooth">
+      <body className={'${roboto.variable} antialiased'}>
          <main className="max-w-4xl mx-auto p-4">
           <AppProvider>
             <Toaster />
