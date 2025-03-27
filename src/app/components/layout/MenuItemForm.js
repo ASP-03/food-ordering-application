@@ -56,7 +56,7 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
                         <p className="text-red-500">{error}</p>
                     ) : (
                         <select className="border p-2 rounded-md" value={category} onChange={ev => setCategory(ev.target.value)}>
-                            <option value="">Select a category</option> {/* ✅ Added default option */}
+                            <option value="">Select a category</option>
                             {categories?.length > 0 &&
                                 categories.map((c) => (
                                     <option key={c._id} value={c._id}>
@@ -76,8 +76,8 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
                         setProps={setSizes} 
                     />
                     <MenuItemPriceProps 
-                        name="Add Toppings"
-                        addLabel="Add toppings price"
+                        name="Add Extras"
+                        addLabel="Add extras price"
                         props={addToppingsPrice}
                         setProps={setAddToppingsPrice}
                     />                 
