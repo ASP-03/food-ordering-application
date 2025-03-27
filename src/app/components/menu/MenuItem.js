@@ -6,22 +6,23 @@ import Tile from "../../components/menu/Tile";
 import { motion } from "framer-motion";
 
 export default function MenuItem({ image, name, description, basePrice, sizes, addToppingsPrice }) {
-  const [selectedSize, setSelectedSize] = useState(sizes?.[0] || null);
+  // Add "Regular" size option manually
+  const allSizes = [{ _id: "regular", name: "Regular", price: 0 }, ...(sizes || [])];
+
+  const [selectedSize, setSelectedSize] = useState(allSizes[0]); // Default to "Regular"
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
-    // Prevent scrolling when popup is open
     if (showPopup) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "hidden"; // Disable scrolling when popup is open
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "auto"; // Re-enable scrolling when popup closes
     }
 
-    // Cleanup function
     return () => {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "auto"; // Cleanup function
     };
   }, [showPopup]);
 
@@ -36,12 +37,9 @@ export default function MenuItem({ image, name, description, basePrice, sizes, a
     
     // Show toast notification
     toast.success(`${name} added to cart!`, {
-      duration: 2000, // Toast disappears after 2 seconds
-      position: "top-right", // Position at top-right
-      style: {
-        background: "#4CAF50", // Green background
-        color: "#fff", // White text
-      },
+      duration: 2000,
+      position: "top-right",
+      style: { background: "#4CAF50", color: "#fff" },
     });
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -58,8 +56,8 @@ export default function MenuItem({ image, name, description, basePrice, sizes, a
     }
   }
 
-  let selectedPrice = basePrice;
-  if (selectedSize) selectedPrice += selectedSize.price;
+  // Calculate total price including size and extras
+  let selectedPrice = basePrice + (selectedSize?.price || 0);
   if (selectedExtras?.length > 0) {
     for (const extra of selectedExtras) {
       selectedPrice += extra.price;
@@ -76,10 +74,10 @@ export default function MenuItem({ image, name, description, basePrice, sizes, a
               <h2 className="text-lg font-bold text-center mb-2">{name}</h2>
               <p className="text-center text-gray-500 text-sm mb-2">{description}</p>
 
-              {sizes?.length > 0 && (
+              {allSizes.length > 0 && (
                 <div className="py-2">
                   <h3 className="text-center text-gray-700">Pick your size</h3>
-                  {sizes.map((size) => (
+                  {allSizes.map((size) => (
                     <label key={size._id} className="flex items-center gap-2 p-4 border rounded-md mb-1">
                       <input
                         type="radio"
@@ -127,7 +125,7 @@ export default function MenuItem({ image, name, description, basePrice, sizes, a
         </div>
       )}
 
-      <Tile onAddToCart={handleAddToCartButtonClick} image={image} name={name} description={description} basePrice={basePrice} />
+      <Tile onAddToCart={handleAddToCartButtonClick} image={image} name={name} description={description} basePrice={basePrice}/>
     </>
   );
 }
