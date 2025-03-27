@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
-import { MenuItem } from "../models/MenuItem";
 import SectionHeaders from "../components/layout/SectionHeaders";
+import MenuItem from "../components/menu/MenuItem";
 
 
 export default function MenuPage() {
@@ -17,6 +17,7 @@ export default function MenuPage() {
         res.json().then(menuItems => setMenuItems(menuItems));
       });
     }, []);
+
     return (
       <section className="mt-8">
         {categories?.length > 0 && categories.map(c => (
