@@ -109,7 +109,7 @@ export default function MenuItem({ image, name, description, basePrice, sizes, a
               )}
 
               <motion.button
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ scale: 1.1/1.055 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={handleAddToCartButtonClick}
                 className="mt-4 bg-red-600 text-white rounded-full px-8 py-2"
