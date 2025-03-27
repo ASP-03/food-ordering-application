@@ -17,7 +17,7 @@ export async function POST(req) {
 
 export async function PUT(req) {
     try {
-        await connectDB(); // Ensure database is connected
+        await connectDB(); 
 
         if (!await isAdmin(req)) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
@@ -29,7 +29,6 @@ export async function PUT(req) {
             return NextResponse.json({ error: "Missing _id" }, { status: 400 });
         }
 
-        // Validate ObjectId format for _id and category
         if (!mongoose.Types.ObjectId.isValid(_id)) {
             return NextResponse.json({ error: "Invalid _id format" }, { status: 400 });
         }
@@ -40,7 +39,7 @@ export async function PUT(req) {
 
         const updatedItem = await MenuItem.findByIdAndUpdate(
             _id, 
-            { ...data, category: category || null }, // Avoid empty string for category
+            { ...data, category: category || null }, 
             { new: true }
         );
 
@@ -69,7 +68,6 @@ export async function DELETE(req) {
     try {
         await connectDB();
 
-        // Use Next.js built-in searchParams
         const _id = req.nextUrl.searchParams.get("_id");
 
         if (!_id) {

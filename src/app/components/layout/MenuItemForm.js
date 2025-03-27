@@ -3,7 +3,7 @@ import EditImage from "./EditImage";
 import MenuItemPriceProps from "./MenuItemPriceProps";
 
 export default function MenuItemForm({ onSubmit, menuItem }) {
-    const [image, setImage] = useState(menuItem?.image || null);  // ✅ Fix: Ensure no empty string
+    const [image, setImage] = useState(menuItem?.image || null);
     const [name, setName] = useState(menuItem?.name || "");
     const [description, setDescription] = useState(menuItem?.description || "");
     const [basePrice, setBasePrice] = useState(menuItem?.basePrice || "");

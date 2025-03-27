@@ -6,12 +6,13 @@ import { createContext, useEffect, useState } from 'react';
 export const CartContext = createContext({});
 
 export function cartProductPrice(cartProduct) {
-  let price = cartProduct.basePrice || 0;
-  price += cartProduct.size?.price || 0;  // ✅ Fix for undefined `size`
-  
+  let price = cartProduct.basePrice;
+  if (cartProduct.size) {
+    price += cartProduct.size.price;
+  }
   if (cartProduct.extras?.length > 0) {
     for (const extra of cartProduct.extras) {
-      price += extra.price || 0;
+      price += extra.price;
     }
   }
   return price;
@@ -23,9 +24,9 @@ export function AppProvider({ children }) {
 
   useEffect(() => {
     if (ls) {
-      setCartProducts(JSON.parse(ls.getItem('cart') || '[]'));  // ✅ Fix for empty localStorage
+      setCartProducts(JSON.parse(ls.getItem('cart') || '[]')); 
     }
-  }, [ls]);  // ✅ Added `ls` dependency to prevent stale reads
+  }, [ls]);  
 
   function saveCartProductsToLocalStorage(cartProducts) {
     if (ls) {
@@ -41,7 +42,7 @@ export function AppProvider({ children }) {
   function removeCartProduct(indexToRemove) {
     setCartProducts(prevCartProducts => {
       const newCartProducts = [...prevCartProducts];
-      newCartProducts.splice(indexToRemove, 1);  // ✅ More efficient than `.filter()`
+      newCartProducts.splice(indexToRemove, 1); 
       saveCartProductsToLocalStorage(newCartProducts);
       return newCartProducts;
     });

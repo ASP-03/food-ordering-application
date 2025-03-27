@@ -2,6 +2,7 @@
 import { useState } from "react";
 import EditImage from "./EditImage";
 import { adminInfo } from "../AdminInfo";
+import AddressInputs from "./AddressInputs";
 
 export default function UserForm({ user, onSave }) {
     const [userName, setUserName] = useState(user?.name || '');
@@ -14,10 +15,13 @@ export default function UserForm({ user, onSave }) {
     const [admin, setAdmin] = useState(user?.admin || false);
     const { data: loggedInUserData } = adminInfo();
 
-    const handleSubmit = (ev) => {
-        ev.preventDefault(); // Prevent default form submission
-        onSave(ev, { name: userName, image, phone, streetAddress, city, country, pinCode, admin });
-    };
+    function handleAddressChange(propName, value) {
+        if (propName === 'phone') setPhone(value);
+        if (propName === 'streetAddress') setStreetAddress(value);
+        if (propName === 'pinCode') setPinCode(value);
+        if (propName === 'city') setCity(value);
+        if (propName === 'country') setCountry(value);
+      }
 
     return (
         <div className='flex gap-4'>
@@ -74,7 +78,12 @@ export default function UserForm({ user, onSave }) {
                         />
                     </div>
                 </div>
-
+                <AddressInputs
+                  addressProps={{
+                    phone, streetAddress, pinCode, city, country
+                  }}
+                  setAddressProp={handleAddressChange}
+                />
                 {loggedInUserData?.admin && (
                     <div className="mt-4">
                         <label className="inline-flex items-center gap-2">

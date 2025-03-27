@@ -1,5 +1,5 @@
 export default function MenuItemTile({ onAddToCart, image, description, name, basePrice }) { 
-    console.log("basePrice:", basePrice)
+    
     return (
         <div className="relative bg-gray-200 p-4 rounded-lg text-center hover:bg-white hover:shadow-md hover:shadow-black/25 transition-all">
             <div className="text-center">
