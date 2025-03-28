@@ -22,6 +22,7 @@ export default function UserForm({ user, onSave }) {
         if (propName === 'city') setCity(value);
         if (propName === 'country') setCountry(value);
       }
+    
 
     return (
         <div className='flex gap-4'>
@@ -30,15 +31,22 @@ export default function UserForm({ user, onSave }) {
                     <EditImage link={image} setLink={setImage} />
                 </div>
             </div>
-            <form className='grow' onSubmit={handleSubmit}>
-                <label>First and last name</label>
+            <form
+                className="grow"
+                onSubmit={ev =>
+                    onSave(ev, {
+                        name:userName, image, phone, admin,
+                        streetAddress, city, country, pinCode,
+                    })
+                }
+            >
+                <label>
+                    First and last name
+                </label>
                 <input
-                    type='text'
-                    placeholder='First and last name'
-                    value={userName}
-                    onChange={(ev) => setUserName(ev.target.value)}
+                    type="text" placeholder="First and last name"
+                    value={userName} onChange={ev => setUserName(ev.target.value)}
                 />
-                
                 <label>Email</label>
                 <input type='email' disabled value={user?.email || ''} />
 
