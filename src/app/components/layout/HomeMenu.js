@@ -27,12 +27,12 @@ export default function HomeMenu(){
                     <Image src={'/salad2.jpg'} width={156} height={305} alt={'salad'} />
                  </div>
               </div>
-             <div className="text-center mb-4 mt-4">
+             <div className="text-center mb-4 mt-12">
                 <SectionHeaders 
                    subHeader={'CHECK OUT OUR'}
                    mainHeader={'Best Sellers'} />
              </div>
-             <div className="grid grid-cols-3 gap-4">
+             <div className="mt-8 grid grid-cols-3 gap-4 px-28">
                   {bestSellers?.length > 0 ? (
                      bestSellers.map((item) => (
                         <MenuItem key={item._id} {...item} />
