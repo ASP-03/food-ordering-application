@@ -1,33 +1,39 @@
-import { getSession } from "next-auth/react";
-import { connectToDatabase } from "../../lib/mongodb";  // Ensure this connects to MongoDB
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
+import connectDB from "../../../utils/db";
+import { Cart } from "../../models/Cart";
 
-export default async function handler(req, res) {
-    const session = await getSession({ req });
+export async function GET(req) {
+    await connectDB();
+    const session = await getServerSession(authOptions);
 
     if (!session) {
-        return res.status(401).json({ error: "Unauthorized" });
+        return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const userId = session.user.id;
-    const { db } = await connectToDatabase();
+    const userEmail = session.user.email;
+    const cart = await Cart.findOne({ userEmail }) || { products: [] };
 
-    if (req.method === "GET") {
-        // Fetch user's cart from the database
-        const cart = await db.collection("carts").findOne({ userId }) || { products: [] };
-        return res.status(200).json(cart.products);
+    return Response.json(cart.products, { status: 200 });
+}
+
+export async function PUT(req) {
+    await connectDB();
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+        return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (req.method === "PUT") {
-        const { products } = req.body;
+    const userEmail = session.user.email;
+    const data = await req.json();
+    const { products } = data;
 
-        await db.collection("carts").updateOne(
-            { userId },
-            { $set: { products } },
-            { upsert: true }
-        );
+    await Cart.findOneAndUpdate(
+        { userEmail },
+        { userEmail, products },
+        { upsert: true }
+    );
 
-        return res.status(200).json({ message: "Cart updated" });
-    }
-
-    return res.status(405).json({ error: "Method not allowed" });
+    return Response.json({ message: "Cart updated" }, { status: 200 });
 }
