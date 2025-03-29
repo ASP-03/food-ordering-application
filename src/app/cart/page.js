@@ -11,7 +11,7 @@ export default function CartPage() {
     const [address, setAddress] = useState({});
     const { data: profileData } = adminInfo();
     const [showQRCode, setShowQRCode] = useState(false);
-    const [loading, setLoading] = useState(true); // Loading state
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (typeof window !== 'undefined' && window.location.href.includes('canceled=1')) {
@@ -27,11 +27,9 @@ export default function CartPage() {
     }, [profileData]);
 
     useEffect(() => {
-        // Simulate loading delay (1.5 seconds)
         const timer = setTimeout(() => {
             setLoading(false);
         }, 350);
-
         return () => clearTimeout(timer);
     }, []);
 
@@ -46,7 +44,23 @@ export default function CartPage() {
         return price;
     }
 
-    let subtotal = cartProducts?.reduce((sum, product) => sum + cartProductPrice(product), 0) || 0;
+    // 🔹 Group identical products by counting occurrences
+    const groupedCart = cartProducts.reduce((acc, product) => {
+        const key = `${product.name}-${product.selectedSize?.name || "Regular"}-${product.selectedExtras?.map(e => e.name).join(",") || "No Extras"}`;
+
+        if (!acc[key]) {
+            acc[key] = { ...product, quantity: 1 };
+        } else {
+            acc[key].quantity += 1;
+        }
+
+        return acc;
+    }, {});
+
+    // Convert grouped object to an array
+    const groupedCartProducts = Object.values(groupedCart);
+
+    let subtotal = groupedCartProducts.reduce((sum, product) => sum + cartProductPrice(product) * product.quantity, 0) || 0;
 
     function handleAddressChange(propName, value) {
         setAddress((prev) => ({ ...prev, [propName]: value }));
@@ -54,7 +68,7 @@ export default function CartPage() {
 
     function proceedToPayment(ev) {
         ev.preventDefault();
-        setShowQRCode(true); // Show QR Code for payment
+        setShowQRCode(true);
     }
 
     if (loading) {
@@ -72,7 +86,7 @@ export default function CartPage() {
     if (showQRCode) {
         return (
             <div className="flex flex-col items-center justify-center mt-8">
-                <h2 className="text-gray-700 font-bold text-xl">Scan to Pay Rs.{subtotal+50}</h2>
+                <h2 className="text-gray-700 font-bold text-xl">Scan to Pay Rs.{subtotal + 50}</h2>
                 <Image 
                     src="/qr.png" 
                     alt="QR Code for Payment" 
@@ -106,26 +120,27 @@ export default function CartPage() {
             </div>
             <div className="mt-8 grid gap-8 grid-cols-2">
                 <div>
-                    {cartProducts.map((product, index) => (
+                    {groupedCartProducts.map((product, index) => (
                         <div key={index} className="flex items-center justify-between border-b pb-4 mb-4">
                             <div className="flex items-center gap-4 mb-3">
                                 <Image src={product.image} alt={product.name} width={90} height={90} />
-                                    <div>
-                                        <p className="font-semibold">{product.name}</p>
-                                        {product.sizes?.length > 0 && (
-                                            <p className="text-gray-500 text-sm">
-                                                Size: {product.selectedSize?.name || "Regular"}
-                                            </p>
-                                        )}
-                                        {product.selectedExtras?.length > 0 && (
-                                            <p className="text-gray-500 text-sm">
-                                                Extras: {product.selectedExtras.map(e => e.name).join(", ")}
-                                            </p>
-                                        )}
-                                    </div>
+                                <div>
+                                    <p className="font-semibold">{product.name}</p>
+                                    {product.sizes?.length > 0 && (
+                                        <p className="text-gray-500 text-sm">
+                                            Size: {product.selectedSize?.name || "Regular"}
+                                        </p>
+                                    )}
+                                    {product.selectedExtras?.length > 0 && (
+                                        <p className="text-gray-500 text-sm">
+                                            Extras: {product.selectedExtras.map(e => e.name).join(", ")}
+                                        </p>
+                                    )}
+                                    <p className="text-gray-500 text-sm">Quantity: {product.quantity}</p>
+                                </div>
                             </div>
                             <div className="text-right">
-                                <p className="font-semibold">Rs.{cartProductPrice(product)}</p>
+                                <p className="font-semibold">Rs.{cartProductPrice(product) * product.quantity}</p>
                                 <button
                                     onClick={() => removeCartProduct(product)}
                                     className="px-2 h-8 w-12 text-red-500 text-lg hover:text-red-700"
@@ -151,51 +166,17 @@ export default function CartPage() {
                 <div className="bg-gray-100 p-4 rounded-lg">
                     <h2 className="text-lg font-semibold mb-4 px-1">Checkout</h2>
                     <form onSubmit={proceedToPayment}>
-                        <div className="mb-4">
-                            <label className="block text-gray-600 px-1 py-1">Phone</label>
-                            <input
-                                type="text"
-                                className="w-full border p-2 rounded"
-                                value={address.phone || ""}
-                                onChange={(e) => handleAddressChange("phone", e.target.value)}
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-600 px-1 py-1">Street Address</label>
-                            <input
-                                type="text"
-                                className="w-full border p-2 rounded"
-                                value={address.streetAddress || ""}
-                                onChange={(e) => handleAddressChange("streetAddress", e.target.value)}
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-600 px-1 py-1">City</label>
-                            <input
-                                type="text"
-                                className="w-full border p-2 rounded"
-                                value={address.city || ""}
-                                onChange={(e) => handleAddressChange("city", e.target.value)}
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-600 px-1 py-1">Pin Code</label>
-                            <input
-                                type="text"
-                                className="w-full border p-2 rounded"
-                                value={address.pinCode || ""}
-                                onChange={(e) => handleAddressChange("pinCode", e.target.value)}
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-600 px-1 py-1">Country</label>
-                            <input
-                                type="text"
-                                className="w-full border p-2 rounded"
-                                value={address.country || ""}
-                                onChange={(e) => handleAddressChange("country", e.target.value)}
-                            />
-                        </div>
+                        {["phone", "streetAddress", "city", "pinCode", "country"].map((field) => (
+                            <div className="mb-4" key={field}>
+                                <label className="block text-gray-600 px-1 py-1 capitalize">{field.replace(/([A-Z])/g, ' $1')}</label>
+                                <input
+                                    type="text"
+                                    className="w-full border p-2 rounded"
+                                    value={address[field] || ""}
+                                    onChange={(e) => handleAddressChange(field, e.target.value)}
+                                />
+                            </div>
+                        ))}
                         <button
                             type="submit"
                             className="w-full bg-red-600 text-white py-2 rounded-lg mt-16"
