@@ -70,15 +70,12 @@ session: {
 },
 
 pages: {
-  signIn: "/auth/signin",
-  error: "/auth/error",
   signIn: "/login",
 },
 
 }
 
-
-  export async function isAdmin() {
+ export async function isAdmin() {
     const session = await getServerSession(authOptions);
     const userEmail = session?.user?.email;
     if (!userEmail) {
