@@ -1,40 +1,33 @@
-import mongoose from "mongoose";
-import { Cart } from "../../models/Cart";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { getSession } from "next-auth/react";
+import { connectToDatabase } from "../../lib/mongodb";  // Ensure this connects to MongoDB
 
-export async function PUT(req) {
-    mongoose.connect(process.env.MONGO_URL);
-    const data = await req.json();
-    const session = await getServerSession(authOptions);
-    
+export default async function handler(req, res) {
+    const session = await getSession({ req });
+
     if (!session) {
-        return Response.json({});
+        return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const { products } = data;
-    const { email: userEmail } = session.user;
+    const userId = session.user.id;
+    const { db } = await connectToDatabase();
 
-    // Update or create cart
-    await Cart.findOneAndUpdate(
-        { userEmail }, 
-        { userEmail, products },
-        { upsert: true }
-    );
+    if (req.method === "GET") {
+        // Fetch user's cart from the database
+        const cart = await db.collection("carts").findOne({ userId }) || { products: [] };
+        return res.status(200).json(cart.products);
+    }
 
-    return Response.json(true);
+    if (req.method === "PUT") {
+        const { products } = req.body;
+
+        await db.collection("carts").updateOne(
+            { userId },
+            { $set: { products } },
+            { upsert: true }
+        );
+
+        return res.status(200).json({ message: "Cart updated" });
+    }
+
+    return res.status(405).json({ error: "Method not allowed" });
 }
-
-export async function GET(req) {
-    mongoose.connect(process.env.MONGO_URL);
-    const session = await getServerSession(authOptions);
-    
-    if (!session) {
-        return Response.json({});
-    }
-
-    const { email: userEmail } = session.user;
-    const cart = await Cart.findOne({ userEmail });
-    
-    return Response.json(cart?.products || []);
-} 
