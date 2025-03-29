@@ -11,6 +11,7 @@ export default function CartPage() {
     const [address, setAddress] = useState({});
     const { data: profileData } = adminInfo();
     const [showQRCode, setShowQRCode] = useState(false);
+    const [loading, setLoading] = useState(true); // Loading state
 
     useEffect(() => {
         if (typeof window !== 'undefined' && window.location.href.includes('canceled=1')) {
@@ -24,6 +25,15 @@ export default function CartPage() {
             setAddress({ phone, streetAddress, city, pinCode, country });
         }
     }, [profileData]);
+
+    useEffect(() => {
+        // Simulate loading delay (1.5 seconds)
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 350);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     function cartProductPrice(product) {
         let price = product.basePrice;
@@ -45,6 +55,18 @@ export default function CartPage() {
     function proceedToPayment(ev) {
         ev.preventDefault();
         setShowQRCode(true); // Show QR Code for payment
+    }
+
+    if (loading) {
+        return (
+            <section className="mt-8 text-center">
+                <h2 className="text-red-600 font-bold text-5xl py-2 italic">Cart</h2>
+                <p className="mt-4 text-gray-500">Loading your cart...</p>
+                <div className="mt-4 flex justify-center">
+                    <div className="animate-spin h-8 w-8 border-4 border-red-500 border-t-transparent rounded-full"></div>
+                </div>
+            </section>
+        );
     }
 
     if (showQRCode) {
@@ -86,26 +108,31 @@ export default function CartPage() {
                 <div>
                     {cartProducts.map((product, index) => (
                         <div key={index} className="flex items-center justify-between border-b pb-4 mb-4">
-                            <div className="flex items-center gap-4">
-                                <Image src={product.image} alt={product.name} width={70} height={70} />
-                                <div>
-                                    <p className="font-semibold">{product.name}</p>
-                                    <p className="text-gray-500 text-sm">Size: {product.selectedSize?.name || "Regular"}</p>
-                                    {product.selectedExtras?.length > 0 && (
-                                        <p className="text-gray-500 text-sm">Extras: {product.selectedExtras.map(e => e.name).join(", ")}</p>
-                                    )}
-                                </div>
+                            <div className="flex items-center gap-4 mb-3">
+                                <Image src={product.image} alt={product.name} width={90} height={90} />
+                                    <div>
+                                        <p className="font-semibold">{product.name}</p>
+                                        {product.sizes?.length > 0 && (
+                                            <p className="text-gray-500 text-sm">
+                                                Size: {product.selectedSize?.name || "Regular"}
+                                            </p>
+                                        )}
+                                        {product.selectedExtras?.length > 0 && (
+                                            <p className="text-gray-500 text-sm">
+                                                Extras: {product.selectedExtras.map(e => e.name).join(", ")}
+                                            </p>
+                                        )}
+                                    </div>
                             </div>
-                        <div className="text-right">
-                             <p className="font-semibold">Rs.{cartProductPrice(product)}</p>
-                            <button
-                                onClick={() => removeCartProduct(product)}
-                                className="px-2 text-red-500 text-lg hover:text-red-700"
-                            >
-                            <Trash />
-                             </button>
-                        </div>
-
+                            <div className="text-right">
+                                <p className="font-semibold">Rs.{cartProductPrice(product)}</p>
+                                <button
+                                    onClick={() => removeCartProduct(product)}
+                                    className="px-2 h-8 w-12 text-red-500 text-lg hover:text-red-700"
+                                >
+                                    <Trash className="h-4"/>
+                                </button>
+                            </div>
                         </div>
                     ))}
                     <div className="py-2 flex justify-end items-center">
