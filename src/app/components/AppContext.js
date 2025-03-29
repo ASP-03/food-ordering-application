@@ -24,43 +24,20 @@ export function AppProvider({ children }) {
   const ls = typeof window !== 'undefined' ? window.localStorage : null;
   const session = useSession();
 
-  // Load cart from localStorage on mount
-  useEffect(() => {
-    if (ls) {
-      const localCart = JSON.parse(ls.getItem('cart') || '[]');
-      setCartProducts(localCart);
-      setIsLoading(false);
-    }
-  }, [ls]);
-
   // Load cart from database when user logs in
   useEffect(() => {
     if (session?.status === 'authenticated') {
       fetch('/api/cart')
         .then(res => res.json())
         .then(dbCart => {
-          if (dbCart?.length > 0) {
-            setCartProducts(prev => {
-              // Merge with existing cart
-              const merged = [...prev, ...dbCart];
-              // Remove duplicates
-              const unique = merged.filter((item, index) => {
-                const stringified = JSON.stringify(item);
-                return index === merged.findIndex(obj => JSON.stringify(obj) === stringified);
-              });
-              saveCartProductsToLocalStorage(unique);
-              return unique;
-            });
-          }
+          setCartProducts(dbCart || []);
+          setIsLoading(false);
         });
+    } else if (session?.status === 'unauthenticated') {
+      setCartProducts([]);
+      setIsLoading(false);
     }
   }, [session?.status]);
-
-  function saveCartProductsToLocalStorage(cartProducts) {
-    if (ls) {
-      ls.setItem('cart', JSON.stringify(cartProducts));
-    }
-  }
 
   function saveCartToDatabase(cartProducts) {
     if (session?.status === 'authenticated') {
@@ -73,30 +50,37 @@ export function AppProvider({ children }) {
   }
 
   function clearCart() {
-    setCartProducts([]);
-    saveCartProductsToLocalStorage([]);
-    saveCartToDatabase([]);
+    if (session?.status === 'authenticated') {
+      setCartProducts([]);
+      saveCartToDatabase([]);
+    }
   }
 
   function removeCartProduct(indexToRemove) {
-    setCartProducts(prevCartProducts => {
-      const newCartProducts = [...prevCartProducts];
-      newCartProducts.splice(indexToRemove, 1);
-      saveCartProductsToLocalStorage(newCartProducts);
-      saveCartToDatabase(newCartProducts);
-      return newCartProducts;
-    });
-    toast.success('Product removed');
+    if (session?.status === 'authenticated') {
+      setCartProducts(prevCartProducts => {
+        const newCartProducts = [...prevCartProducts];
+        newCartProducts.splice(indexToRemove, 1);
+        saveCartToDatabase(newCartProducts);
+        return newCartProducts;
+      });
+      toast.success('Product removed');
+    } else {
+      toast.error('Please login to manage your cart');
+    }
   }
 
   function addToCart(product, selectedSize = null, selectedExtras = []) {
-    setCartProducts(prevProducts => {
-      const cartProduct = { ...product, selectedSize, selectedExtras };
-      const newProducts = [...prevProducts, cartProduct];
-      saveCartProductsToLocalStorage(newProducts);
-      saveCartToDatabase(newProducts);
-      return newProducts;
-    });
+    if (session?.status === 'authenticated') {
+      setCartProducts(prevProducts => {
+        const cartProduct = { ...product, selectedSize, selectedExtras };
+        const newProducts = [...prevProducts, cartProduct];
+        saveCartToDatabase(newProducts);
+        return newProducts;
+      });
+    } else {
+      toast.error('Please login to add items to cart');
+    }
   }
 
   return (
