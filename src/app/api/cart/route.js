@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
-import connectDB from "../../../utils/db";
+import connectDB from "../../../utils/db"; // Fixed import path
 import { Cart } from "../../models/Cart";
 
 export async function GET(req) {
