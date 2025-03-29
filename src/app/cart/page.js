@@ -8,10 +8,12 @@ import Trash from "../components/icons/Trash";
 
 export default function CartPage() {
     const { cartProducts, removeCartProduct } = useContext(CartContext);
-    const [address, setAddress] = useState({});
+    const [address, setAddress] = useState({ phone: "", streetAddress: "", city: "", pinCode: "", country: "" });
     const { data: profileData } = adminInfo();
     const [showQRCode, setShowQRCode] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");  // State for validation error
+    const [isFormValid, setIsFormValid] = useState(false);  // Tracks if form is valid
 
     useEffect(() => {
         if (typeof window !== 'undefined' && window.location.href.includes('canceled=1')) {
@@ -33,6 +35,10 @@ export default function CartPage() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        validateAddress();  // Validate form on every address change
+    }, [address]);
+
     function cartProductPrice(product) {
         let price = product.basePrice;
         if (product.selectedSize) price += product.selectedSize.price;
@@ -44,30 +50,38 @@ export default function CartPage() {
         return price;
     }
 
-    // 🔹 Group identical products by counting occurrences
     const groupedCart = cartProducts.reduce((acc, product) => {
         const key = `${product.name}-${product.selectedSize?.name || "Regular"}-${product.selectedExtras?.map(e => e.name).join(",") || "No Extras"}`;
-
         if (!acc[key]) {
             acc[key] = { ...product, quantity: 1 };
         } else {
             acc[key].quantity += 1;
         }
-
         return acc;
     }, {});
 
-    // Convert grouped object to an array
     const groupedCartProducts = Object.values(groupedCart);
-
     let subtotal = groupedCartProducts.reduce((sum, product) => sum + cartProductPrice(product) * product.quantity, 0) || 0;
 
     function handleAddressChange(propName, value) {
         setAddress((prev) => ({ ...prev, [propName]: value }));
     }
 
+    function validateAddress() {
+        if (!address.phone || !address.streetAddress || !address.city || !address.pinCode || !address.country) {
+            setIsFormValid(false);
+        } else {
+            setIsFormValid(true);
+            setError("");  // Clear error when form is valid
+        }
+    }
+
     function proceedToPayment(ev) {
         ev.preventDefault();
+        if (!isFormValid) {
+            setError("Please fill in all fields before proceeding.");
+            return;
+        }
         setShowQRCode(true);
     }
 
@@ -126,16 +140,8 @@ export default function CartPage() {
                                 <Image src={product.image} alt={product.name} width={90} height={90} />
                                 <div>
                                     <p className="font-semibold">{product.name}</p>
-                                    {product.sizes?.length > 0 && (
-                                        <p className="text-gray-500 text-sm">
-                                            Size: {product.selectedSize?.name || "Regular"}
-                                        </p>
-                                    )}
-                                    {product.selectedExtras?.length > 0 && (
-                                        <p className="text-gray-500 text-sm">
-                                            Extras: {product.selectedExtras.map(e => e.name).join(", ")}
-                                        </p>
-                                    )}
+                                    <p className="text-gray-500 text-sm">Size: {product.selectedSize?.name || "Regular"}</p>
+                                    <p className="text-gray-500 text-sm">Extras: {product.selectedExtras?.map(e => e.name).join(", ") || "None"}</p>
                                     <p className="text-gray-500 text-sm">Quantity: {product.quantity}</p>
                                 </div>
                             </div>
@@ -165,24 +171,32 @@ export default function CartPage() {
                 </div>
                 <div className="bg-gray-100 p-4 rounded-lg">
                     <h2 className="text-lg font-semibold mb-4 px-1">Checkout</h2>
+                    {error && <p className="text-red-600 mb-4 text-sm">{error}</p>}
                     <form onSubmit={proceedToPayment}>
-                        {["phone", "streetAddress", "city", "pinCode", "country"].map((field) => (
+                        {Object.keys(address).map((field) => (
                             <div className="mb-4" key={field}>
                                 <label className="block text-gray-600 px-1 py-1 capitalize">{field.replace(/([A-Z])/g, ' $1')}</label>
                                 <input
                                     type="text"
                                     className="w-full border p-2 rounded"
-                                    value={address[field] || ""}
+                                    value={address[field]}
                                     onChange={(e) => handleAddressChange(field, e.target.value)}
                                 />
                             </div>
                         ))}
-                        <button
+                       <button
                             type="submit"
-                            className="w-full bg-red-600 text-white py-2 rounded-lg mt-16"
-                        >
+                            className={`w-full py-2 rounded-lg mt-12 ${
+                            isFormValid ? "bg-red-600 text-white hover:bg-red-700" : "bg-gray-400 cursor-not-allowed"
+                            }`}
+                            disabled={!isFormValid}>
                             Pay Rs.{subtotal + 50}
-                        </button>
+                       </button>
+                       {!isFormValid && (
+                           <p className="text-red-600 text-sm mt-2 text-center">
+                           Please fill in all of the required fields to proceed with payment.
+                           </p>
+                        )}
                     </form>
                 </div>
             </div>
