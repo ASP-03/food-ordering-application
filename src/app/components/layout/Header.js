@@ -17,7 +17,7 @@ export default function Header(){
 
 
     return(
-        <header className="mt-2 px-8 flex items-center justify-between">
+        <header className="mt-2 px-4 flex items-center justify-between">
         <nav className="flex items-center gap-8 text-gray-500 font-semibold justify">
            <Link className="text-red-600 font-semibold text-2xl" href={'/'}> Rominos Pizza
            </Link>
@@ -26,7 +26,7 @@ export default function Header(){
           <Link href={'/#about'}>About</Link>
           <Link href={'/#contact'}>Contact</Link>
         </nav>
-        <nav className="flex items-center gap-4 text-gray-500 font-semibold">
+        <nav className="flex items-center gap-3 text-gray-500 font-semibold">
           {status === 'authenticated' && (
             <>
               <Link href={'/profile'} className='whitespace-nowrap'>
@@ -49,9 +49,9 @@ export default function Header(){
           )}
           {cartProducts?.length > 0 && (
             <Link 
-             href={'/cart'} className="relative">
+             href={'/cart'} className="relative px-1">
              <ShoppingCart/>
-             <span className="absolute -top-2 -right-4 bg-red-600 text-white text-xs py-1 px-1 rounded-full loading-3">
+             <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs py-1 px-1 rounded-full loading-3">
                 ({cartProducts.length})
              </span> 
             </Link>
