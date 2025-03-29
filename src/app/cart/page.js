@@ -10,6 +10,7 @@ export default function CartPage() {
     const { cartProducts, removeCartProduct } = useContext(CartContext);
     const [address, setAddress] = useState({});
     const { data: profileData } = adminInfo();
+    const [showQRCode, setShowQRCode] = useState(false);
 
     useEffect(() => {
         if (typeof window !== 'undefined' && window.location.href.includes('canceled=1')) {
@@ -41,31 +42,30 @@ export default function CartPage() {
         setAddress((prev) => ({ ...prev, [propName]: value }));
     }
 
-    async function proceedToCheckout(ev) {
+    function proceedToPayment(ev) {
         ev.preventDefault();
+        setShowQRCode(true); // Show QR Code for payment
+    }
 
-        const promise = new Promise((resolve, reject) => {
-            fetch('/api/checkout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ address, cartProducts }),
-            })
-            .then(async (response) => {
-                if (response.ok) {
-                    resolve();
-                    const checkoutUrl = await response.json();
-                    window.location.href = checkoutUrl; 
-                } else {
-                    reject();
-                }
-            });
-        });
-
-        await toast.promise(promise, {
-            loading: 'Preparing your order...',
-            success: 'Redirecting to payment...',
-            error: 'Something went wrong... Please try again later',
-        });
+    if (showQRCode) {
+        return (
+            <div className="flex flex-col items-center justify-center mt-8">
+                <h2 className="text-gray-700 font-bold text-xl">Scan to Pay Rs.{subtotal+50}</h2>
+                <Image 
+                    src="/qr.png" 
+                    alt="QR Code for Payment" 
+                    width={250} 
+                    height={250} 
+                    className="mt-4 border-2 border-gray-300 p-2 rounded-lg"
+                />
+                <button
+                    onClick={() => setShowQRCode(false)}
+                    className="mt-4 px-4 py-2 max-w-xs bg-red-500 text-white rounded-lg hover:bg-red-600"
+                >
+                    Go Back
+                </button>
+            </div>
+        );
     }
 
     if (!cartProducts || cartProducts.length === 0) {
@@ -123,7 +123,7 @@ export default function CartPage() {
                 </div>
                 <div className="bg-gray-100 p-4 rounded-lg">
                     <h2 className="text-lg font-semibold mb-4 px-1">Checkout</h2>
-                    <form onSubmit={proceedToCheckout}>
+                    <form onSubmit={proceedToPayment}>
                         <div className="mb-4">
                             <label className="block text-gray-600 px-1 py-1">Phone</label>
                             <input
