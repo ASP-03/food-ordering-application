@@ -21,7 +21,6 @@ export function cartProductPrice(cartProduct) {
 export function AppProvider({ children }) {
   const [cartProducts, setCartProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const ls = typeof window !== 'undefined' ? window.localStorage : null;
   const session = useSession();
 
   // Load cart from database when user logs in
@@ -33,8 +32,7 @@ export function AppProvider({ children }) {
           setCartProducts(dbCart || []);
           setIsLoading(false);
         });
-    } else if (session?.status === 'unauthenticated') {
-      setCartProducts([]);
+    } else {
       setIsLoading(false);
     }
   }, [session?.status]);

@@ -5,11 +5,22 @@ import { adminInfo } from "../components/AdminInfo";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import Trash from "../components/icons/Trash";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
-    const { cartProducts, removeCartProduct } = useContext(CartContext);
+    const { cartProducts, removeCartProduct, isLoading } = useContext(CartContext);
     const [address, setAddress] = useState({});
     const { data: profileData } = adminInfo();
+    const { data: session, status } = useSession();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (status === 'unauthenticated') {
+            toast.error('Please login to view your cart');
+            router.push('/login');
+        }
+    }, [status, router]);
 
     useEffect(() => {
         if (typeof window !== 'undefined' && window.location.href.includes('canceled=1')) {
@@ -43,6 +54,12 @@ export default function CartPage() {
 
     async function proceedToCheckout(ev) {
         ev.preventDefault();
+        
+        if (!session) {
+            toast.error('Please login to proceed with checkout');
+            router.push('/login');
+            return;
+        }
 
         const promise = new Promise((resolve, reject) => {
             fetch('/api/checkout', {
@@ -66,6 +83,15 @@ export default function CartPage() {
             success: 'Redirecting to payment...',
             error: 'Something went wrong... Please try again later',
         });
+    }
+
+    if (isLoading) {
+        return (
+            <section className="mt-8 text-center">
+                <h2 className="text-red-600 font-bold text-5xl py-2 italic">Cart</h2>
+                <p className="mt-4 text-gray-500">Loading your cart...</p>
+            </section>
+        );
     }
 
     if (!cartProducts || cartProducts.length === 0) {
@@ -96,16 +122,15 @@ export default function CartPage() {
                                     )}
                                 </div>
                             </div>
-                        <div className="text-right">
-                             <p className="font-semibold">Rs.{cartProductPrice(product)}</p>
-                            <button
-                                onClick={() => removeCartProduct(product)}
-                                className="px-2 text-red-500 text-lg hover:text-red-700"
-                            >
-                            <Trash />
-                             </button>
-                        </div>
-
+                            <div className="text-right">
+                                <p className="font-semibold">Rs.{cartProductPrice(product)}</p>
+                                <button
+                                    onClick={() => removeCartProduct(index)}
+                                    className="px-2 text-red-500 text-lg hover:text-red-700"
+                                >
+                                    <Trash />
+                                </button>
+                            </div>
                         </div>
                     ))}
                     <div className="py-2 flex justify-end items-center">
