@@ -29,7 +29,7 @@ export default function RootLayout({
           <AppProvider>
             <Toaster />
             <Header />
-            <main className="max-w-5xl mx-auto p-4">{children}</main>
+            <main className="max-w-6xl mx-auto p-4">{children}</main>
             <footer className="border-t p-8 text-center text-gray-500 mt-16">
               &copy; {new Date().getFullYear()} All Rights Reserved
             </footer>

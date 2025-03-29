@@ -30,7 +30,7 @@ export default function Header(){
           {status === 'authenticated' && (
             <>
               <Link href={'/profile'} className='whitespace-nowrap'>
-                 Hello, {userName}
+                 Hello, {userName?.split('@')[0]}
               </Link>
               <button onClick={() => signOut({ callbackUrl: '/' })} 
                  className="bg-red-600 rounded-full text-white px-8 py-2">
