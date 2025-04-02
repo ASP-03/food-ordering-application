@@ -16,8 +16,13 @@ const OrderSchema = new mongoose.Schema({
             price: Number
         }]
     }],
+    subtotal: {type: Number, required: true},
+    deliveryFee: {type: Number, required: true},
     total: {type: Number, required: true},
     status: {type: String, default: 'pending'},
+    paymentStatus: {type: String, default: 'pending'},
+    paymentMethod: {type: String},
+    paymentDate: {type: Date},
     address: {
         streetAddress: {type: String, required: true},
         city: {type: String, required: true},

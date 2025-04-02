@@ -12,7 +12,8 @@ export default function CartPage() {
     const [address, setAddress] = useState({ phone: "", streetAddress: "", city: "", pinCode: "", country: "" });
     const { data: profileData } = adminInfo();
     const [showQRCode, setShowQRCode] = useState(false);
-    const [paymentSuccess, setPaymentSuccess] = useState(false); 
+    const [paymentSuccess, setPaymentSuccess] = useState(false);
+    const [orderDetails, setOrderDetails] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");  
     const [isFormValid, setIsFormValid] = useState(false);
@@ -104,13 +105,40 @@ export default function CartPage() {
         
         paymentTimerRef.current = setTimeout(async () => {
             try {
+                // Calculate item prices with their extras and sizes
+                const formattedItems = groupedCartProducts.map(item => {
+                    const itemPrice = cartProductPrice(item);
+                    return {
+                        name: item.name,
+                        image: item.image,
+                        price: itemPrice,
+                        quantity: item.quantity,
+                        selectedSize: item.selectedSize || null,
+                        selectedExtras: item.selectedExtras || []
+                    };
+                });
+
+                const deliveryFee = 50;
+                const subtotalAmount = formattedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const totalAmount = subtotalAmount + deliveryFee;
+
                 // Create order
                 const orderData = {
-                    items: groupedCartProducts,
-                    total: subtotal + 50,
-                    address,
-                    phone: address.phone
+                    items: formattedItems,
+                    subtotal: subtotalAmount,
+                    deliveryFee: deliveryFee,
+                    total: totalAmount,
+                    address: {
+                        streetAddress: address.streetAddress,
+                        city: address.city,
+                        pinCode: address.pinCode,
+                        country: address.country
+                    },
+                    phone: address.phone,
+                    status: 'confirmed'
                 };
+
+                console.log('Sending order data:', orderData);
 
                 const response = await fetch('/api/orders', {
                     method: 'POST',
@@ -120,17 +148,25 @@ export default function CartPage() {
                     body: JSON.stringify(orderData),
                 });
 
+                const data = await response.json();
+
                 if (!response.ok) {
-                    throw new Error('Failed to create order');
+                    throw new Error(data.error || 'Failed to create order');
                 }
 
+                setOrderDetails({
+                    subtotal: subtotalAmount,
+                    deliveryFee: deliveryFee,
+                    total: totalAmount
+                });
                 setShowQRCode(false);
                 setPaymentSuccess(true);
                 clearCart();
                 toast.success("Payment confirmed! 🎉 Order placed successfully.");
             } catch (error) {
                 console.error('Error creating order:', error);
-                toast.error("Failed to create order. Please try again.");
+                toast.error(error.message || "Failed to create order. Please try again.");
+                setShowQRCode(false);
             }
         }, 5000);
     }
@@ -159,8 +195,21 @@ export default function CartPage() {
     if (paymentSuccess) {
         return (
             <div className="flex flex-col items-center justify-center mt-8 p-8 bg-white rounded-xl shadow-lg">
-                <h2 className="text-green-600 font-bold text-3xl mb-4">Order Successful 🎉</h2>
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h2 className="text-green-600 font-bold text-3xl mb-4">Payment Successful! 🎉</h2>
                 <p className="text-gray-700 text-lg mb-6">Thank you for your purchase! Your order has been placed successfully.</p>
+                <div className="bg-gray-50 p-4 rounded-lg mb-6 w-full max-w-md">
+                    <h3 className="font-semibold mb-2">Order Details:</h3>
+                    <p className="text-gray-600">Subtotal: Rs.{orderDetails?.subtotal || 0}</p>
+                    <p className="text-gray-600">Delivery Fee: Rs.{orderDetails?.deliveryFee || 50}</p>
+                    <p className="text-gray-600 font-bold">Total Amount: Rs.{orderDetails?.total || 0}</p>
+                    <p className="text-gray-600">Delivery Address: {address.streetAddress}, {address.city}</p>
+                    <p className="text-gray-600">Phone: {address.phone}</p>
+                </div>
                 <button
                     onClick={() => router.push("/")}
                     className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 shadow-md hover:shadow-lg"
@@ -183,6 +232,14 @@ export default function CartPage() {
                         height={250} 
                         className="border-2 border-gray-200 p-2 rounded-lg"
                     />
+                </div>
+                <div className="mt-4 text-center">
+                    <p className="text-gray-600 mb-2">Please scan the QR code to complete payment</p>
+                    <div className="bg-gray-50 p-3 rounded-lg mt-4">
+                        <p className="text-sm text-gray-600">Subtotal: <span className="font-medium">Rs.{subtotal}</span></p>
+                        <p className="text-sm text-gray-600">Delivery: <span className="font-medium">Rs.50</span></p>
+                        <p className="text-lg font-bold text-red-600 mt-1">Total: Rs.{subtotal + 50}</p>
+                    </div>
                 </div>
                 <button
                     onClick={handleGoBack}

@@ -36,25 +36,39 @@ export default function OrdersList() {
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-6">
             {orders.map((order) => (
-                <div key={order._id} className="bg-white rounded-lg shadow-md p-6">
+                <div key={order._id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
                     <div className="flex justify-between items-start mb-4">
                         <div>
-                            <h3 className="font-semibold text-lg">Order #{order._id.slice(-6)}</h3>
+                            <h3 className="font-semibold text-xl mb-1">Order #{order._id.slice(-6)}</h3>
                             <p className="text-gray-600 text-sm">
-                                {new Date(order.createdAt).toLocaleDateString()}
+                                {new Date(order.createdAt).toLocaleString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
                             </p>
                         </div>
                         <div className="text-right">
-                            <p className="font-semibold text-lg">Rs.{order.total}</p>
-                            <p className="text-sm text-gray-600">{order.status}</p>
+                            <div className="bg-gray-50 p-3 rounded-lg">
+                                <p className="text-sm text-gray-600">Subtotal: <span className="font-medium">Rs.{order.subtotal}</span></p>
+                                <p className="text-sm text-gray-600">Delivery: <span className="font-medium">Rs.{order.deliveryFee}</span></p>
+                                <p className="text-lg font-bold text-red-600 mt-1">Total: Rs.{order.total}</p>
+                            </div>
+                            <div className="flex items-center justify-end gap-2 mt-2">
+                                <span className="px-3 py-1 rounded-full text-sm bg-green-100 text-green-800 font-medium">
+                                    Payment Confirmed
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-3 mt-6">
                         {order.items.map((item, index) => (
-                            <div key={index} className="flex items-center gap-4 py-2 border-b last:border-0">
-                                <div className="relative w-16 h-16 rounded-lg overflow-hidden">
+                            <div key={index} className="flex items-center gap-4 py-3 border-b last:border-0">
+                                <div className="relative w-20 h-20 rounded-lg overflow-hidden">
                                     <Image
                                         src={item.image}
                                         alt={item.name}
@@ -63,23 +77,23 @@ export default function OrdersList() {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="font-medium">{item.name}</p>
-                                    <p className="text-sm text-gray-600">
-                                        Size: {item.selectedSize?.name || 'Regular'}
+                                    <p className="font-medium text-lg">{item.name}</p>
+                                    <div className="text-sm text-gray-600 space-y-1">
+                                        <p>Size: {item.selectedSize?.name || 'Regular'}</p>
                                         {item.selectedExtras?.length > 0 && (
-                                            <span> • Extras: {item.selectedExtras.map(e => e.name).join(', ')}</span>
+                                            <p>Extras: {item.selectedExtras.map(e => e.name).join(', ')}</p>
                                         )}
-                                    </p>
-                                    <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
+                                        <p>Quantity: {item.quantity}</p>
+                                    </div>
                                 </div>
-                                <p className="font-semibold">Rs.{item.price * item.quantity}</p>
+                                <p className="font-semibold text-lg">Rs.{item.price * item.quantity}</p>
                             </div>
                         ))}
                     </div>
                     <div className="mt-4 pt-4 border-t">
                         <div className="flex justify-between text-sm">
                             <span className="text-gray-600">Delivery Address:</span>
-                            <span className="font-medium">{order.address.streetAddress}, {order.address.city}, {order.address.pinCode}</span>
+                            <span className="font-medium text-right">{order.address.streetAddress}, {order.address.city}, {order.address.pinCode}</span>
                         </div>
                     </div>
                 </div>
