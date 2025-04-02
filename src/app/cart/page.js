@@ -314,8 +314,12 @@ export default function CartPage() {
                                 </div>
                                 <div>
                                     <p className="font-semibold text-lg hover:text-red-600 transition-colors duration-200">{product.name}</p>
-                                    <p className="text-gray-600 text-sm">Size: {product.selectedSize?.name || "Regular"}</p>
-                                    <p className="text-gray-600 text-sm">Extras: {product.selectedExtras?.map(e => e.name).join(", ") || "None"}</p>
+                                    {product.selectedSize && (
+                                        <p className="text-gray-600 text-sm">Size: {product.selectedSize.name}</p>
+                                    )}
+                                    {product.selectedExtras?.length > 0 && (
+                                        <p className="text-gray-600 text-sm">Extras: {product.selectedExtras.map(e => e.name).join(", ")}</p>
+                                    )}
                                     <p className="text-gray-600 text-sm">Quantity: {product.quantity}</p>
                                 </div>
                             </div>

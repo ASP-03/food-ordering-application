@@ -22,14 +22,14 @@ export default function MenuItem({ image, name, description, basePrice, sizes, a
   }, [showPopup]);
 
   const handleAddToCartButtonClick = () => {
-    const hasOptions = sizes?.length > 0 || addToppingsPrice?.length > 0;
+    const hasOptions = (sizes && sizes.length > 0) || (addToppingsPrice && addToppingsPrice.length > 0);
     if (hasOptions && !showPopup) {
       setShowPopup(true);
       return;
     }
     addToCart(
       { image, name, basePrice, sizes, addToppingsPrice },
-      selectedSize || null,
+      selectedSize,
       selectedExtras
     );
     
@@ -105,8 +105,8 @@ export default function MenuItem({ image, name, description, basePrice, sizes, a
                   className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none"
                   value={selectedSize?.name || "Regular"}
                   onChange={(e) => {
-                    const size = sizes.find(s => s.name === e.target.value) || null;
-                    setSelectedSize(size);
+                    const size = sizes.find(s => s.name === e.target.value);
+                    setSelectedSize(size || null);
                   }}
                 >
                   <option value="Regular">Regular</option>
