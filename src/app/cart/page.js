@@ -18,6 +18,7 @@ export default function CartPage() {
     const [error, setError] = useState("");  
     const [isFormValid, setIsFormValid] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
+    const [showValidation, setShowValidation] = useState(false);
     const router = useRouter();
     const paymentTimerRef = useRef(null);
 
@@ -91,8 +92,18 @@ export default function CartPage() {
     }
 
     function validateAddress() {
-        if (!address.phone || !address.streetAddress || !address.city || !address.pinCode || !address.country) {
+        const emptyFields = [];
+        if (!address.phone) emptyFields.push('Phone');
+        if (!address.streetAddress) emptyFields.push('Street Address');
+        if (!address.city) emptyFields.push('City');
+        if (!address.pinCode) emptyFields.push('Pin Code');
+        if (!address.country) emptyFields.push('Country');
+
+        if (emptyFields.length > 0) {
             setIsFormValid(false);
+            if (showValidation) {
+                setError(`Please fill in the following required fields: ${emptyFields.join(', ')}`);
+            }
         } else {
             setIsFormValid(true);
             setError("");
@@ -109,6 +120,7 @@ export default function CartPage() {
 
     function proceedToPayment(ev) {
         ev.preventDefault();
+        setShowValidation(true);
         if (!isFormValid) {
             setError("Please fill in all fields before proceeding.");
             return;
@@ -384,30 +396,43 @@ export default function CartPage() {
                 </div>
                 <div className="bg-white rounded-xl shadow-lg p-6 transform transition-all duration-300 hover:shadow-xl">
                     <h2 className="text-xl font-semibold mb-6">Checkout</h2>
-                    {error && <p className="text-red-600 mb-4 text-sm bg-red-50 p-3 rounded-lg animate-shake">{error}</p>}
+                    {showValidation && error && (
+                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <p className="text-red-600 text-sm">{error}</p>
+                        </div>
+                    )}
                     <form onSubmit={proceedToPayment}>
                         {Object.keys(address).map((field) => (
                             <div className="mb-4" key={field}>
-                                <label className="block text-gray-600 px-1 py-1 capitalize font-medium">{field.replace(/([A-Z])/g, ' $1')}</label>
+                                <label className="block text-gray-600 px-1 py-1 capitalize font-medium">
+                                    {field.replace(/([A-Z])/g, ' $1')}
+                                    <span className="text-red-500 ml-1">*</span>
+                                </label>
                                 <input
                                     type="text"
-                                    className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 hover:border-red-300"
+                                    className={`w-full border ${showValidation && !address[field] ? 'border-red-300' : 'border-gray-300'} p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 hover:border-red-300`}
                                     value={address[field]}
                                     onChange={(e) => handleAddressChange(field, e.target.value)}
                                     placeholder={`Enter your ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`}
+                                    onBlur={validateAddress}
                                 />
+                                {showValidation && !address[field] && (
+                                    <p className="text-red-500 text-sm mt-1">This field is required</p>
+                                )}
                             </div>
                         ))}
-                       <button
+                        <button
                             type="submit"
                             className={`w-full py-3 rounded-lg mt-8 text-lg font-medium transform transition-all duration-200 ${
                             isFormValid 
                                 ? "bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:scale-105 active:scale-95" 
-                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : "bg-gray-300 text-gray-500 cursor-not-allowed hover:bg-gray-400"
                             }`}
-                            disabled={!isFormValid}>
+                            disabled={!isFormValid && showValidation}
+                            title={!isFormValid && showValidation ? "Please fill in all required fields" : ""}
+                        >
                             Pay Rs.{subtotal + 50}
-                       </button>
+                        </button>
                     </form>
                 </div>
             </div>
