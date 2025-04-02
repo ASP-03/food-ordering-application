@@ -67,12 +67,13 @@ export default function CartPage() {
         return price;
     }
 
-    const groupedCart = cartProducts.reduce((acc, product) => {
+    const groupedCart = cartProducts.reduce((acc, product, originalIndex) => {
         const key = `${product.name}-${product.selectedSize?.name || "Regular"}-${product.selectedExtras?.map(e => e.name).join(",") || "No Extras"}`;
         if (!acc[key]) {
-            acc[key] = { ...product, quantity: 1 };
+            acc[key] = { ...product, quantity: 1, indices: [originalIndex] };
         } else {
             acc[key].quantity += 1;
+            acc[key].indices.push(originalIndex);
         }
         return acc;
     }, {});
@@ -80,7 +81,7 @@ export default function CartPage() {
     const groupedCartProducts = Object.values(groupedCart).sort((a, b) => {
         const priceA = cartProductPrice(a) * a.quantity;
         const priceB = cartProductPrice(b) * b.quantity;
-        return priceB - priceA; // Sort in descending order (highest price first)
+        return priceB - priceA;
     });
 
     let subtotal = groupedCartProducts.reduce((sum, product) => sum + cartProductPrice(product) * product.quantity, 0) || 0;
@@ -203,6 +204,12 @@ export default function CartPage() {
         }
     }
 
+    function handleRemoveProduct(product) {
+        // Remove the last occurrence of this product
+        const lastIndex = product.indices[product.indices.length - 1];
+        removeCartProduct(lastIndex);
+    }
+
     if (loading) {
         return (
             <section className="mt-8 text-center">
@@ -294,8 +301,8 @@ export default function CartPage() {
             </div>
             <div className="mt-8 grid gap-8 grid-cols-1 lg:grid-cols-2">
                 <div className="bg-white rounded-xl shadow-lg p-6 transform transition-all duration-300 hover:shadow-xl">
-                    {groupedCartProducts.map((product, index) => (
-                        <div key={index} className="flex items-center justify-between border-b border-gray-200 pb-6 mb-6 last:border-0 transform transition-all duration-200 hover:bg-gray-50 rounded-lg px-2">
+                    {groupedCartProducts.map((product) => (
+                        <div key={product.indices[0]} className="flex items-center justify-between border-b border-gray-200 pb-6 mb-6 last:border-0 transform transition-all duration-200 hover:bg-gray-50 rounded-lg px-2">
                             <div className="flex items-center gap-6">
                                 <div className="relative w-24 h-24 rounded-lg overflow-hidden shadow-md group">
                                     <Image 
@@ -315,16 +322,18 @@ export default function CartPage() {
                             <div className="text-right">
                                 <p className="font-semibold text-lg hover:text-red-600 transition-colors duration-200">Rs.{cartProductPrice(product) * product.quantity}</p>
                                 <div className="flex gap-2 justify-end mt-2">
+                                    {(product.sizes?.length > 0 || product.addToppingsPrice?.length > 0) && (
+                                        <button
+                                            onClick={() => handleEditItem(product, product.indices[0])}
+                                            className="px-2 h-8 w-12 text-blue-500 text-lg hover:text-blue-700 transition-colors duration-200 hover:scale-110 transform"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                            </svg>
+                                        </button>
+                                    )}
                                     <button
-                                        onClick={() => handleEditItem(product, index)}
-                                        className="px-2 h-8 w-12 text-blue-500 text-lg hover:text-blue-700 transition-colors duration-200 hover:scale-110 transform"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                        </svg>
-                                    </button>
-                                    <button
-                                        onClick={() => removeCartProduct(product)}
+                                        onClick={() => handleRemoveProduct(product)}
                                         className="px-2 h-8 w-12 text-red-500 text-lg hover:text-red-700 transition-colors duration-200 hover:scale-110 transform"
                                     >
                                         <Trash className="h-4"/>
