@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import UserTabs from '../components/layout/UserTabs'
 import UserForm from '../components/layout/UserForm'
+import OrdersList from '../components/layout/OrdersList'
 
 export default function profilePage() {
     const session = useSession()
@@ -23,7 +24,6 @@ export default function profilePage() {
                     setProfileFetched(true)
                 })
             })
-
         }
     }, [session, status])
 
@@ -49,7 +49,6 @@ export default function profilePage() {
         })
     }
     
-    
     if(status === 'loading' || !profileFetched) {
         return 'Loading...'
     }
@@ -64,6 +63,10 @@ export default function profilePage() {
             <UserTabs isAdmin={isAdmin} />
             <div className='max-w-2xl mx-auto mt-8'>
                 <UserForm user={user} onSave={handleProfileUpdate} />
+            </div>
+            <div className='max-w-4xl mx-auto mt-8 px-4'>
+                <h2 className="text-2xl font-bold mb-6">Your Orders</h2>
+                <OrdersList />
             </div>
         </section>
     )

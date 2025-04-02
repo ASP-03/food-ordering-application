@@ -1,13 +1,16 @@
+'use client';
 import Hero from "./components/layout/Hero";
+import { useRef } from 'react';
 import HomeMenu from "./components/layout/HomeMenu"
 import SectionHeaders from "./components/layout/SectionHeaders";
 
 export default function Home() {
+  const aboutRef = useRef(null);
   return (
     <>
-      <Hero />
+      <Hero aboutRef={aboutRef}/>
       <HomeMenu />
-      <section className="text-center my-16" id="about">
+      <section ref={aboutRef} className="text-center my-16" id="about">
          <SectionHeaders
              subHeader={''}
              mainHeader={'About Us'} 

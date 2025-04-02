@@ -102,11 +102,36 @@ export default function CartPage() {
 
         setShowQRCode(true);
         
-        paymentTimerRef.current = setTimeout(() => {
-            setShowQRCode(false);
-            setPaymentSuccess(true);
-            clearCart();
-            toast.success("Payment confirmed! 🎉 Order placed successfully.");
+        paymentTimerRef.current = setTimeout(async () => {
+            try {
+                // Create order
+                const orderData = {
+                    items: groupedCartProducts,
+                    total: subtotal + 50,
+                    address,
+                    phone: address.phone
+                };
+
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create order');
+                }
+
+                setShowQRCode(false);
+                setPaymentSuccess(true);
+                clearCart();
+                toast.success("Payment confirmed! 🎉 Order placed successfully.");
+            } catch (error) {
+                console.error('Error creating order:', error);
+                toast.error("Failed to create order. Please try again.");
+            }
         }, 5000);
     }
 
