@@ -83,11 +83,26 @@ export function AppProvider({ children }) {
     }
   }
 
+  function updateCartItem(index, updatedItem) {
+    if (session?.status === 'authenticated') {
+      setCartProducts(prevProducts => {
+        const newProducts = [...prevProducts];
+        newProducts[index] = updatedItem;
+        saveCartToDatabase(newProducts);
+        return newProducts;
+      });
+      toast.success('Item updated successfully');
+    } else {
+      toast.error('Please login to manage your cart');
+    }
+  }
+
   return (
     <SessionProvider>
       <CartContext.Provider value={{
         cartProducts, setCartProducts,
         addToCart, removeCartProduct, clearCart,
+        updateCartItem,
         isLoading,
       }}>
         {children}
