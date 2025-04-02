@@ -5,7 +5,7 @@ import Image from "next/image";
 import { createPortal } from 'react-dom';
 
 export default function MenuItem({ image, name, description, basePrice, sizes, addToppingsPrice }) {
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(sizes?.length > 0 ? { name: 'Regular', price: 0 } : null);
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const { addToCart } = useContext(CartContext);
@@ -29,7 +29,7 @@ export default function MenuItem({ image, name, description, basePrice, sizes, a
     }
     addToCart(
       { image, name, basePrice, sizes, addToppingsPrice },
-      selectedSize,
+      selectedSize || { name: 'Regular', price: 0 },
       selectedExtras
     );
     
@@ -105,8 +105,12 @@ export default function MenuItem({ image, name, description, basePrice, sizes, a
                   className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none"
                   value={selectedSize?.name || "Regular"}
                   onChange={(e) => {
-                    const size = sizes.find(s => s.name === e.target.value);
-                    setSelectedSize(size || null);
+                    if (e.target.value === "Regular") {
+                      setSelectedSize({ name: "Regular", price: 0 });
+                    } else {
+                      const size = sizes.find(s => s.name === e.target.value);
+                      setSelectedSize(size || { name: "Regular", price: 0 });
+                    }
                   }}
                 >
                   <option value="Regular">Regular</option>

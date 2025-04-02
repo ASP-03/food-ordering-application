@@ -8,7 +8,7 @@ import Trash from "../components/icons/Trash";
 import { useRouter } from "next/navigation";
 
 export default function CartPage() {
-    const { cartProducts, removeCartProduct, clearCart, updateCartItem } = useContext(CartContext);
+    const { cartProducts, removeCartProduct, clearCart, updateCartItem, updateCartItemQuantity } = useContext(CartContext);
     const [address, setAddress] = useState({ phone: "", streetAddress: "", city: "", pinCode: "", country: "" });
     const { data: profileData } = adminInfo();
     const [showQRCode, setShowQRCode] = useState(false);
@@ -320,7 +320,36 @@ export default function CartPage() {
                                     {product.selectedExtras?.length > 0 && (
                                         <p className="text-gray-600 text-sm">Extras: {product.selectedExtras.map(e => e.name).join(", ")}</p>
                                     )}
-                                    <p className="text-gray-600 text-sm">Quantity: {product.quantity}</p>
+                                    <div className="flex items-center gap-4 mt-2">
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => {
+                                                    const productToUpdate = cartProducts[product.indices[0]];
+                                                    updateCartItemQuantity(productToUpdate, product.quantity - 1);
+                                                }}
+                                                className="px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
+                                                disabled={product.quantity <= 1}
+                                            >
+                                                -
+                                            </button>
+                                            <span className="font-semibold">{product.quantity}</span>
+                                            <button
+                                                onClick={() => {
+                                                    const productToUpdate = cartProducts[product.indices[0]];
+                                                    updateCartItemQuantity(productToUpdate, product.quantity + 1);
+                                                }}
+                                                className="px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                        <button
+                                            onClick={() => handleRemoveProduct(product)}
+                                            className="px-2 h-8 w-12 text-red-500 text-lg hover:text-red-700 transition-colors duration-200 hover:scale-110 transform"
+                                        >
+                                            <Trash className="h-4"/>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div className="text-right">

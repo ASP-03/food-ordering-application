@@ -97,12 +97,61 @@ export function AppProvider({ children }) {
     }
   }
 
+  function updateCartItemQuantity(product, newQuantity) {
+    if (session?.status === 'authenticated') {
+      setCartProducts(prevProducts => {
+        // Find all matching products in the cart
+        const matchingProducts = prevProducts.filter(p => 
+          p.name === product.name && 
+          p.selectedSize?.name === product.selectedSize?.name &&
+          JSON.stringify(p.selectedExtras) === JSON.stringify(product.selectedExtras)
+        );
+        
+        const currentQuantity = matchingProducts.length;
+        
+        if (newQuantity === currentQuantity) return prevProducts;
+        
+        let newProducts = [...prevProducts];
+        
+        if (newQuantity > currentQuantity) {
+          // Add more items
+          const itemToAdd = {
+            ...product,
+            selectedSize: product.selectedSize || { name: 'Regular', price: 0 },
+            selectedExtras: product.selectedExtras || []
+          };
+          
+          for (let i = 0; i < newQuantity - currentQuantity; i++) {
+            newProducts.push(itemToAdd);
+          }
+        } else {
+          // Remove items from the end
+          const numToRemove = currentQuantity - newQuantity;
+          const indicesToRemove = matchingProducts
+            .map((_, index) => prevProducts.indexOf(matchingProducts[index]))
+            .slice(-numToRemove)
+            .sort((a, b) => b - a); // Sort in descending order to remove from end
+          
+          indicesToRemove.forEach(index => {
+            newProducts.splice(index, 1);
+          });
+        }
+        
+        saveCartToDatabase(newProducts);
+        return newProducts;
+      });
+      toast.success('Quantity updated');
+    } else {
+      toast.error('Please login to manage your cart');
+    }
+  }
+
   return (
     <SessionProvider>
       <CartContext.Provider value={{
         cartProducts, setCartProducts,
         addToCart, removeCartProduct, clearCart,
-        updateCartItem,
+        updateCartItem, updateCartItemQuantity,
         isLoading,
       }}>
         {children}
