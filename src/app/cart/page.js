@@ -8,7 +8,7 @@ import Trash from "../components/icons/Trash";
 import { useRouter } from "next/navigation";
 
 export default function CartPage() {
-    const { cartProducts, removeCartProduct, clearCart, updateCartItem, updateCartItemQuantity } = useContext(CartContext);
+    const { cartProducts, removeCartProduct, clearCart, updateCartItem, updateCartItemQuantity, isLoading } = useContext(CartContext);
     const [address, setAddress] = useState({ phone: "", streetAddress: "", city: "", pinCode: "", country: "" });
     const { data: profileData } = adminInfo();
     const [showQRCode, setShowQRCode] = useState(false);
@@ -210,7 +210,7 @@ export default function CartPage() {
         removeCartProduct(lastIndex);
     }
 
-    if (loading) {
+    if (loading || isLoading) {
         return (
             <section className="mt-8 text-center">
                 <h2 className="text-red-600 font-bold text-5xl py-2 italic">Cart</h2>
@@ -343,12 +343,6 @@ export default function CartPage() {
                                                 +
                                             </button>
                                         </div>
-                                        <button
-                                            onClick={() => handleRemoveProduct(product)}
-                                            className="px-2 h-8 w-12 text-red-500 text-lg hover:text-red-700 transition-colors duration-200 hover:scale-110 transform"
-                                        >
-                                            <Trash className="h-4"/>
-                                        </button>
                                     </div>
                                 </div>
                             </div>
