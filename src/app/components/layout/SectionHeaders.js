@@ -1,12 +1,10 @@
-export default function SectionHeaders({subHeader,mainHeader}) {
-    return(
+export default function SectionHeaders({mainHeader, subHeader}) {
+    return (
         <>
-           <h3 className="uppercase text-xl text-gray-500 semibold leading-2">
-                   {subHeader}
-            </h3>
-            <h2 className="text-red-600 font-bold text-5xl py-2 italic">
-                  {mainHeader}
-            </h2>
+            <h3 className="text-4xl font-bold text-gray-800 mb-2">{mainHeader}</h3>
+            {subHeader && (
+                <p className="text-gray-500 text-lg mb-4 mt-2">{subHeader}</p>
+            )}
         </>
-    )
+    );
 }
