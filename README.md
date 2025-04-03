@@ -1,33 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Food Ordering Application
+
+This is a modern food ordering application built with [Next.js](https://nextjs.org) and [MongoDB](https://www.mongodb.com/). It allows users to browse menu items, place orders, and manage their profiles.
+
+## Features
+
+- **User Authentication**: Secure login and registration using NextAuth.js. Users can create accounts, log in, and manage their profiles securely.
+- **Menu Management**: An admin interface allows for the management of menu items and categories. Admins can add, edit, and delete items, ensuring the menu is always up-to-date.
+- **Shopping Cart**: Real-time cart management with React Context. Users can add items to their cart, adjust quantities, and proceed to checkout seamlessly.
+- **Order Management**: Track orders and payment statuses. Users can view their order history and receive updates on their order status.
+- **Payment Integration**: Support for multiple payment gateways (Stripe, Razorpay, Cashfree). Users can choose their preferred payment method for a flexible checkout experience.
+- **File Storage**: Upload and manage images using AWS S3. This allows for efficient storage and retrieval of images for menu items and user profiles.
+- **Responsive Design**: Built with Tailwind CSS for a seamless user experience. The application is fully responsive, providing an optimal viewing experience across all devices.
+
+## Technologies Used
+
+- **Frontend**: Next.js, React, Tailwind CSS, Framer Motion
+- **Backend**: Next.js API Routes
+- **Database**: MongoDB with Mongoose
+- **Authentication**: NextAuth.js
+- **File Storage**: AWS S3
+- **Payment Gateways**: Stripe, Razorpay, Cashfree
 
 ## Getting Started
 
-First, run the development server:
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd food-ordering-app
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Install dependencies**:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Set up environment variables**:
+   Create a `.env` file in the root directory with the following variables:
+   ```
+   MONGODB_URI=<your-mongodb-uri>
+   AWS_ACCESS_KEY_ID=<your-aws-access-key>
+   AWS_SECRET_ACCESS_KEY=<your-aws-secret-key>
+   AWS_BUCKET_NAME=<your-s3-bucket-name>
+   STRIPE_SECRET_KEY=<your-stripe-secret-key>
+   RAZORPAY_KEY_ID=<your-razorpay-key-id>
+   RAZORPAY_KEY_SECRET=<your-razorpay-key-secret>
+   CASHFREE_APP_ID=<your-cashfree-app-id>
+   CASHFREE_SECRET_KEY=<your-cashfree-secret-key>
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. **Run the development server**:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. **Open [http://localhost:3000](http://localhost:3000)** with your browser to see the application.
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+To learn more about the technologies used in this project, check out the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [Next.js Documentation](https://nextjs.org/docs)
+- [MongoDB Documentation](https://docs.mongodb.com/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [NextAuth.js Documentation](https://next-auth.js.org/getting-started/introduction)
 
 ## Deploy on Vercel
 
