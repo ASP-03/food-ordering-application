@@ -19,7 +19,6 @@ This is a modern food ordering application built with [Next.js](https://nextjs.o
 - **Database**: MongoDB with Mongoose
 - **Authentication**: NextAuth.js
 - **File Storage**: AWS S3
-- **Payment Gateways**: Stripe, Razorpay, Cashfree
 
 ## Getting Started
 
@@ -43,11 +42,6 @@ This is a modern food ordering application built with [Next.js](https://nextjs.o
    AWS_ACCESS_KEY_ID=<your-aws-access-key>
    AWS_SECRET_ACCESS_KEY=<your-aws-secret-key>
    AWS_BUCKET_NAME=<your-s3-bucket-name>
-   STRIPE_SECRET_KEY=<your-stripe-secret-key>
-   RAZORPAY_KEY_ID=<your-razorpay-key-id>
-   RAZORPAY_KEY_SECRET=<your-razorpay-key-secret>
-   CASHFREE_APP_ID=<your-cashfree-app-id>
-   CASHFREE_SECRET_KEY=<your-cashfree-secret-key>
    ```
 
 4. **Run the development server**:
