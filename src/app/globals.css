@@ -2,10 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Force scrollbar to always be present */
+html {
+    scrollbar-gutter: stable;
+}
+
+html, body {
+    @apply overflow-x-hidden;
+}
+
 section.hero {
     @apply grid;
     grid-template-columns: .4fr .6fr;
 }
+
+@media screen and (max-width: 768px) {
+    section.hero {
+        @apply grid-cols-1;
+    }
+}
+
 select,
 input[type="email"],
 input[type="password"],
@@ -19,7 +35,6 @@ input[type="password"]:disabled,
 input[type="tel"]:disabled,
 input[type="text"]:disabled {
     @apply bg-gray-100 border-0 cursor-not-allowed text-gray-400;
-
 }
 
 label{
@@ -33,14 +48,13 @@ label + input{
 button, .button{
     @apply flex w-full justify-center gap-2 text-gray-700 font-semibold border border-gray-300 rounded-xl px-6 py-2;
 }
-button[type="submit"], .submit{
-    @apply border-red-600 bg-red-600 text-white
 
+button[type="submit"], .submit{
+    @apply border-red-600 bg-red-600 text-white;
 }
 
 button[type="submit"]:disabled, .submit:disabled{
     @apply cursor-not-allowed bg-red-400;
-
 }
 
 div.tabs > * {
