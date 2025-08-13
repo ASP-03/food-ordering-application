@@ -30,7 +30,7 @@ export default function HomeMenu() {
             </div>
             <div className="text-center mb-4 mt-12">
                 <SectionHeaders 
-                    subHeader={'CHECK OUT OUR'} 
+                    subHeader={'CHECK OUT NOW'} 
                     mainHeader={'Best Sellers'} 
                 />
             </div>

@@ -88,7 +88,7 @@ export default function UserForm({ user, onSave }) {
                 </div>
                 <AddressInputs
                   addressProps={{
-                    phone, streetAddress, pinCode, city, country
+                     country
                   }}
                   setAddressProp={handleAddressChange}
                 />
