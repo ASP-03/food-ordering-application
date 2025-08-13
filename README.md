@@ -2,6 +2,13 @@
 
 This is a modern food ordering application built with [Next.js](https://nextjs.org) and [MongoDB](https://www.mongodb.com/). It allows users to browse menu items, place orders, and manage their profiles.
 
+<img width="1919" height="947" alt="Screenshot 2025-08-14 022705" src="https://github.com/user-attachments/assets/f47c4a94-51e4-4252-8eec-ca7d4b4206ca" />
+
+
+
+## For More Images: [Click Here](https://drive.google.com/file/d/1vKDUoZlhNqamP6WASt8P6yq-rlYfafSO/view?usp=sharing)
+
+
 ## Features
 
 - **User Authentication**: Secure login and registration using NextAuth.js. Users can create accounts, log in, and manage their profiles securely.
